@@ -1,0 +1,23 @@
+{
+    "name": "cmn/jusea-v2",
+    "description": "JUSEA CMN v2.0 - Sistema de Tramitación de Expedientes del Colegio Militar de la Nación",
+    "type": "project",
+    "require": {
+        "php": "^8.1",
+        "codeigniter4/framework": "^4.4",
+        "phpoffice/phpword": "^1.2",
+        "tecnickcom/tcpdf": "^6.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "config": {
+        "audit": {
+            "ignore": ["PKSA-jw72-bn8m-h7rc"]
+        }
+    }
+}

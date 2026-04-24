@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 215" width="200" height="215">
+  <defs>
+    <path id="arc-top" d="M 16,108 A 84,84 0 0,1 184,108"/>
+    <path id="arc-bot" d="M 21,122 A 79,79 0 0,0 179,122"/>
+    <linearGradient id="goldMain" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#e8c84a"/>
+      <stop offset="45%"  stop-color="#c9a227"/>
+      <stop offset="100%" stop-color="#9a7a18"/>
+    </linearGradient>
+    <linearGradient id="goldFlat" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"   stop-color="#ddb830"/>
+      <stop offset="100%" stop-color="#a88018"/>
+    </linearGradient>
+    <linearGradient id="goldBanner" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#b08820"/>
+      <stop offset="50%"  stop-color="#e8c84a"/>
+      <stop offset="100%" stop-color="#b08820"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ── OUTER FRAME ─────────────────────────────────── -->
+  <!-- Drop shadow -->
+  <ellipse cx="102" cy="104" rx="95" ry="90" fill="rgba(0,0,0,0.18)"/>
+  <!-- Gold oval border -->
+  <ellipse cx="100" cy="101" rx="96" ry="91" fill="url(#goldMain)"/>
+  <!-- Inner rim -->
+  <ellipse cx="100" cy="101" rx="87" ry="82" fill="url(#goldFlat)"/>
+  <!-- Crimson interior -->
+  <ellipse cx="100" cy="97"  rx="74" ry="70" fill="#8B1520"/>
+
+  <!-- ── LAUREL — LEFT ──────────────────────────────── -->
+  <g fill="#c9a227">
+    <ellipse cx="33" cy="118" rx="9"   ry="4"   transform="rotate(-38 33 118)"/>
+    <ellipse cx="29" cy="103" rx="9"   ry="4"   transform="rotate(-52 29 103)"/>
+    <ellipse cx="29" cy="88"  rx="8.5" ry="3.5" transform="rotate(-63 29 88)"/>
+    <ellipse cx="32" cy="74"  rx="8"   ry="3.5" transform="rotate(-72 32 74)"/>
+    <ellipse cx="38" cy="62"  rx="7"   ry="3"   transform="rotate(-80 38 62)"/>
+    <ellipse cx="46" cy="53"  rx="6"   ry="2.5" transform="rotate(-85 46 53)"/>
+    <ellipse cx="42" cy="113" rx="8"   ry="3.5" transform="rotate(-18 42 113)"/>
+    <ellipse cx="40" cy="98"  rx="7.5" ry="3"   transform="rotate(-28 40 98)"/>
+    <ellipse cx="42" cy="83"  rx="7"   ry="3"   transform="rotate(-38 42 83)"/>
+    <ellipse cx="46" cy="70"  rx="6.5" ry="2.5" transform="rotate(-46 46 70)"/>
+    <ellipse cx="52" cy="59"  rx="6"   ry="2.5" transform="rotate(-55 52 59)"/>
+  </g>
+
+  <!-- ── LAUREL — RIGHT ─────────────────────────────── -->
+  <g fill="#c9a227">
+    <ellipse cx="167" cy="118" rx="9"   ry="4"   transform="rotate(38 167 118)"/>
+    <ellipse cx="171" cy="103" rx="9"   ry="4"   transform="rotate(52 171 103)"/>
+    <ellipse cx="171" cy="88"  rx="8.5" ry="3.5" transform="rotate(63 171 88)"/>
+    <ellipse cx="168" cy="74"  rx="8"   ry="3.5" transform="rotate(72 168 74)"/>
+    <ellipse cx="162" cy="62"  rx="7"   ry="3"   transform="rotate(80 162 62)"/>
+    <ellipse cx="154" cy="53"  rx="6"   ry="2.5" transform="rotate(85 154 53)"/>
+    <ellipse cx="158" cy="113" rx="8"   ry="3.5" transform="rotate(18 158 113)"/>
+    <ellipse cx="160" cy="98"  rx="7.5" ry="3"   transform="rotate(28 160 98)"/>
+    <ellipse cx="158" cy="83"  rx="7"   ry="3"   transform="rotate(38 158 83)"/>
+    <ellipse cx="154" cy="70"  rx="6.5" ry="2.5" transform="rotate(46 154 70)"/>
+    <ellipse cx="148" cy="59"  rx="6"   ry="2.5" transform="rotate(55 148 59)"/>
+  </g>
+
+  <!-- ── TOWER ──────────────────────────────────────── -->
+  <!-- Base (wider, trapezoid) -->
+  <path d="M 79,152 L 83,119 L 117,119 L 121,152 Z" fill="url(#goldFlat)"/>
+  <!-- Arch entrance -->
+  <path d="M 91,152 L 91,138 Q 100,130 109,138 L 109,152 Z" fill="#7a1015"/>
+  <!-- Body -->
+  <rect x="85" y="90" width="30" height="31" fill="url(#goldFlat)" rx="1"/>
+  <!-- Window slits -->
+  <rect x="90" y="97" width="4" height="9" rx="2" fill="#7a1015"/>
+  <rect x="106" y="97" width="4" height="9" rx="2" fill="#7a1015"/>
+  <!-- Horizontal trim between body and base -->
+  <rect x="83" y="119" width="34" height="3" fill="#c9a227"/>
+  <!-- Battlements -->
+  <rect x="84" y="80" width="8"  height="12" fill="url(#goldFlat)" rx="1"/>
+  <rect x="96" y="80" width="8"  height="12" fill="url(#goldFlat)" rx="1"/>
+  <rect x="108" y="80" width="8" height="12" fill="url(#goldFlat)" rx="1"/>
+  <!-- Merlon gaps -->
+  <rect x="92"  y="84" width="4" height="8"  fill="#8B1520"/>
+  <rect x="104" y="84" width="4" height="8"  fill="#8B1520"/>
+
+  <!-- ── SCALES OF JUSTICE ──────────────────────────── -->
+  <!-- Fist / hand (rounded rect) -->
+  <rect x="93" y="45" width="14" height="14" rx="4" fill="url(#goldFlat)"/>
+  <!-- Thumb suggestion -->
+  <rect x="90" y="50" width="5"  height="6"  rx="2" fill="url(#goldFlat)"/>
+  <!-- Vertical post -->
+  <rect x="99" y="59" width="2.5" height="22" fill="#c9a227" rx="1"/>
+  <!-- Horizontal beam -->
+  <rect x="70" y="62" width="60" height="3" fill="url(#goldFlat)" rx="1.5"/>
+  <!-- Pivot -->
+  <circle cx="100" cy="63.5" r="3.5" fill="url(#goldMain)"/>
+  <!-- Left suspension chain -->
+  <line x1="76"  y1="65" x2="72"  y2="76" stroke="#c9a227" stroke-width="1.5"/>
+  <!-- Left pan -->
+  <ellipse cx="71" cy="78" rx="8" ry="2.5" fill="url(#goldFlat)"/>
+  <!-- Right suspension chain -->
+  <line x1="124" y1="65" x2="128" y2="76" stroke="#c9a227" stroke-width="1.5"/>
+  <!-- Right pan -->
+  <ellipse cx="129" cy="78" rx="8" ry="2.5" fill="url(#goldFlat)"/>
+
+  <!-- ── ARC TEXT ────────────────────────────────────── -->
+  <text font-family="Georgia,'Times New Roman',serif" font-size="12.5" font-weight="bold" fill="#1a0e00" letter-spacing="2.2">
+    <textPath href="#arc-top" startOffset="10%">COLEGIO MILITAR</textPath>
+  </text>
+  <text font-family="Georgia,'Times New Roman',serif" font-size="12.5" font-weight="bold" fill="#1a0e00" letter-spacing="2.2">
+    <textPath href="#arc-bot" startOffset="20%">DE LA NACION</textPath>
+  </text>
+
+  <!-- ── BANNER: DIVISION JURIDICA ─────────────────── -->
+  <rect x="38" y="183" width="124" height="19" rx="4" fill="url(#goldBanner)" stroke="#8a6010" stroke-width="0.8"/>
+  <text x="100" y="197" text-anchor="middle"
+        font-family="Georgia,'Times New Roman',serif"
+        font-size="9.5" font-weight="bold" fill="#1a0800" letter-spacing="1.2">
+    DIVISION JURIDICA
+  </text>
+</svg>

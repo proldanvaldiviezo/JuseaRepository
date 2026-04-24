@@ -1,0 +1,15 @@
+CRITICAL - 2026-04-21 23:18:40 --> ErrorException: Type of Config\Routing::$override404 must be ?string (as in class CodeIgniter\Config\Routing)
+[Method: GET, Route: /]
+in APPPATH\Config\Routing.php on line 7.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+CRITICAL - 2026-04-21 23:19:11 --> TypeError: preg_quote(): Argument #1 ($str) must be of type string, array given
+[Method: GET, Route: /]
+in SYSTEMPATH\HTTP\ContentSecurityPolicy.php on line 915.
+ 1 SYSTEMPATH\HTTP\ContentSecurityPolicy.php(915): preg_quote([...], '/')
+ 2 SYSTEMPATH\HTTP\ContentSecurityPolicy.php(438): CodeIgniter\HTTP\ContentSecurityPolicy->generateNonces(Object(CodeIgniter\HTTP\Response))
+ 3 SYSTEMPATH\HTTP\ResponseTrait.php(370): CodeIgniter\HTTP\ContentSecurityPolicy->finalize(Object(CodeIgniter\HTTP\Response))
+ 4 SYSTEMPATH\CodeIgniter.php(1125): CodeIgniter\HTTP\Response->send()
+ 5 SYSTEMPATH\CodeIgniter.php(363): CodeIgniter\CodeIgniter->sendResponse()
+ 6 SYSTEMPATH\Boot.php(417): CodeIgniter\CodeIgniter->run()
+ 7 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 8 FCPATH\index.php(54): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
