@@ -1,0 +1,6 @@
+CRITICAL - 2026-04-24 20:30:18 --> Error: Class "Locale" not found
+[Method: GET, Route: /]
+in SYSTEMPATH\CodeIgniter.php on line 189.
+ 1 SYSTEMPATH\Boot.php(404): CodeIgniter\CodeIgniter->initialize()
+ 2 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::initializeCodeIgniter()
+ 3 FCPATH\index.php(54): CodeIgniter\Boot::bootWeb()

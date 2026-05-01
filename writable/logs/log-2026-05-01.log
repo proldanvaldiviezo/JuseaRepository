@@ -1,0 +1,163 @@
+CRITICAL - 2026-05-01 09:27:26 --> Error: Class "ZipArchive" not found
+[Method: GET, Route: sancion/cuadros/descargar/32/docx]
+in VENDORPATH\phpoffice\phpword\src\PhpWord\Shared\ZipArchive.php on line 139.
+ 1 VENDORPATH\phpoffice\phpword\src\PhpWord\Writer\AbstractWriter.php(284): PhpOffice\PhpWord\Shared\ZipArchive->open()
+ 2 VENDORPATH\phpoffice\phpword\src\PhpWord\Writer\Word2007.php(98): PhpOffice\PhpWord\Writer\AbstractWriter->getZipArchive()
+ 3 APPPATH\Libraries\DocumentGenerator.php(1394): PhpOffice\PhpWord\Writer\Word2007->save()
+ 4 APPPATH\Libraries\DocumentGenerator.php(232): App\Libraries\DocumentGenerator->descargarDocx()
+ 5 APPPATH\Libraries\DocumentGenerator.php(63): App\Libraries\DocumentGenerator->generarSancionCuadrosDocx()
+ 6 APPPATH\Libraries\DocumentGenerator.php(55): App\Libraries\DocumentGenerator->generarSancionDocx()
+ 7 APPPATH\Controllers\SancionController.php(206): App\Libraries\DocumentGenerator->generarSancion()
+ 8 APPPATH\Controllers\SancionController.php(171): App\Controllers\SancionController->generarDocumento()
+ 9 SYSTEMPATH\CodeIgniter.php(951): App\Controllers\SancionController->descargarCuadros()
+10 SYSTEMPATH\CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+11 SYSTEMPATH\CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+12 SYSTEMPATH\Boot.php(417): CodeIgniter\CodeIgniter->run()
+13 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+14 FCPATH\index.php(54): CodeIgniter\Boot::bootWeb()
+CRITICAL - 2026-05-01 15:00:39 --> Error: Class "Locale" not found
+[Method: GET, Route: /]
+in SYSTEMPATH\CodeIgniter.php on line 189.
+ 1 SYSTEMPATH\Boot.php(404): CodeIgniter\CodeIgniter->initialize()
+ 2 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::initializeCodeIgniter()
+ 3 FCPATH\index.php(54): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-05-01 15:00:42 --> Error: Class "Locale" not found
+[Method: GET, Route: /]
+in SYSTEMPATH\CodeIgniter.php on line 189.
+ 1 SYSTEMPATH\Boot.php(404): CodeIgniter\CodeIgniter->initialize()
+ 2 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::initializeCodeIgniter()
+ 3 FCPATH\index.php(54): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-05-01 10:02:07 --> CodeIgniter\Session\Exceptions\SessionException: Session: Configured save path "C:\Users\pablo\OneDrive\Documentos\GitHub\JuseaRepository\writable\session" is not writable by the PHP process.
+[Method: GET, Route: /]
+in SYSTEMPATH\Session\Handlers\FileHandler.php on line 102.
+ 1 SYSTEMPATH\Session\Handlers\FileHandler.php(102): CodeIgniter\Session\Exceptions\SessionException::forWriteProtectedSavePath('C:\\Users\\pablo\\OneDrive\\Documentos\\GitHub\\JuseaRepository\\writable\\session')
+ 2 [internal function]: CodeIgniter\Session\Handlers\FileHandler->open('C:\\Users\\pablo\\OneDrive\\Documentos\\GitHub\\JuseaRepository\\writable\\session', 'ci_session')
+ 3 SYSTEMPATH\Session\Session.php(625): session_start()
+ 4 SYSTEMPATH\Session\Session.php(120): CodeIgniter\Session\Session->startSession()
+ 5 SYSTEMPATH\Config\Services.php(715): CodeIgniter\Session\Session->start()
+ 6 SYSTEMPATH\Config\BaseService.php(325): CodeIgniter\Config\Services::session(Object(Config\Session), false)
+ 7 SYSTEMPATH\Config\BaseService.php(264): CodeIgniter\Config\BaseService::__callStatic('session', [...])
+ 8 SYSTEMPATH\Config\Services.php(668): CodeIgniter\Config\BaseService::getSharedInstance('session', null)
+ 9 SYSTEMPATH\Config\BaseService.php(334): CodeIgniter\Config\Services::session()
+10 SYSTEMPATH\Config\BaseService.php(203): CodeIgniter\Config\BaseService::__callStatic('session', [])
+11 SYSTEMPATH\Common.php(1078): CodeIgniter\Config\BaseService::get('session')
+12 SYSTEMPATH\Common.php(1051): service('session')
+13 APPPATH\Controllers\AuthController.php(16): session()
+14 SYSTEMPATH\CodeIgniter.php(951): App\Controllers\AuthController->login()
+15 SYSTEMPATH\CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AuthController))
+16 SYSTEMPATH\CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+17 SYSTEMPATH\Boot.php(417): CodeIgniter\CodeIgniter->run()
+18 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+19 FCPATH\index.php(54): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-05-01 10:03:03 --> CodeIgniter\Session\Exceptions\SessionException: Session: Configured save path "C:\Users\pablo\OneDrive\Documentos\GitHub\JuseaRepository\writable\session" is not writable by the PHP process.
+[Method: GET, Route: /]
+in SYSTEMPATH\Session\Handlers\FileHandler.php on line 102.
+ 1 SYSTEMPATH\Session\Handlers\FileHandler.php(102): CodeIgniter\Session\Exceptions\SessionException::forWriteProtectedSavePath('C:\\Users\\pablo\\OneDrive\\Documentos\\GitHub\\JuseaRepository\\writable\\session')
+ 2 [internal function]: CodeIgniter\Session\Handlers\FileHandler->open('C:\\Users\\pablo\\OneDrive\\Documentos\\GitHub\\JuseaRepository\\writable\\session', 'ci_session')
+ 3 SYSTEMPATH\Session\Session.php(625): session_start()
+ 4 SYSTEMPATH\Session\Session.php(120): CodeIgniter\Session\Session->startSession()
+ 5 SYSTEMPATH\Config\Services.php(715): CodeIgniter\Session\Session->start()
+ 6 SYSTEMPATH\Config\BaseService.php(325): CodeIgniter\Config\Services::session(Object(Config\Session), false)
+ 7 SYSTEMPATH\Config\BaseService.php(264): CodeIgniter\Config\BaseService::__callStatic('session', [...])
+ 8 SYSTEMPATH\Config\Services.php(668): CodeIgniter\Config\BaseService::getSharedInstance('session', null)
+ 9 SYSTEMPATH\Config\BaseService.php(334): CodeIgniter\Config\Services::session()
+10 SYSTEMPATH\Config\BaseService.php(203): CodeIgniter\Config\BaseService::__callStatic('session', [])
+11 SYSTEMPATH\Common.php(1078): CodeIgniter\Config\BaseService::get('session')
+12 SYSTEMPATH\Common.php(1051): service('session')
+13 APPPATH\Controllers\AuthController.php(16): session()
+14 SYSTEMPATH\CodeIgniter.php(951): App\Controllers\AuthController->login()
+15 SYSTEMPATH\CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AuthController))
+16 SYSTEMPATH\CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+17 SYSTEMPATH\Boot.php(417): CodeIgniter\CodeIgniter->run()
+18 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+19 FCPATH\index.php(54): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-05-01 10:03:08 --> CodeIgniter\Session\Exceptions\SessionException: Session: Configured save path "C:\Users\pablo\OneDrive\Documentos\GitHub\JuseaRepository\writable\session" is not writable by the PHP process.
+[Method: GET, Route: /]
+in SYSTEMPATH\Session\Handlers\FileHandler.php on line 102.
+ 1 SYSTEMPATH\Session\Handlers\FileHandler.php(102): CodeIgniter\Session\Exceptions\SessionException::forWriteProtectedSavePath('C:\\Users\\pablo\\OneDrive\\Documentos\\GitHub\\JuseaRepository\\writable\\session')
+ 2 [internal function]: CodeIgniter\Session\Handlers\FileHandler->open('C:\\Users\\pablo\\OneDrive\\Documentos\\GitHub\\JuseaRepository\\writable\\session', 'ci_session')
+ 3 SYSTEMPATH\Session\Session.php(625): session_start()
+ 4 SYSTEMPATH\Session\Session.php(120): CodeIgniter\Session\Session->startSession()
+ 5 SYSTEMPATH\Config\Services.php(715): CodeIgniter\Session\Session->start()
+ 6 SYSTEMPATH\Config\BaseService.php(325): CodeIgniter\Config\Services::session(Object(Config\Session), false)
+ 7 SYSTEMPATH\Config\BaseService.php(264): CodeIgniter\Config\BaseService::__callStatic('session', [...])
+ 8 SYSTEMPATH\Config\Services.php(668): CodeIgniter\Config\BaseService::getSharedInstance('session', null)
+ 9 SYSTEMPATH\Config\BaseService.php(334): CodeIgniter\Config\Services::session()
+10 SYSTEMPATH\Config\BaseService.php(203): CodeIgniter\Config\BaseService::__callStatic('session', [])
+11 SYSTEMPATH\Common.php(1078): CodeIgniter\Config\BaseService::get('session')
+12 SYSTEMPATH\Common.php(1051): service('session')
+13 APPPATH\Controllers\AuthController.php(16): session()
+14 SYSTEMPATH\CodeIgniter.php(951): App\Controllers\AuthController->login()
+15 SYSTEMPATH\CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AuthController))
+16 SYSTEMPATH\CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+17 SYSTEMPATH\Boot.php(417): CodeIgniter\CodeIgniter->run()
+18 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+19 FCPATH\index.php(54): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ERROR - 2026-05-01 10:09:39 --> Error connecting to the database: mysqli_sql_exception: Access denied for user 'proldan'@'%' to database 'jusea_cmn' in C:\Users\pablo\OneDrive\Documentos\GitHub\JuseaRepository\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:201
+Stack trace:
+#0 C:\Users\pablo\OneDrive\Documentos\GitHub\JuseaRepository\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php(201): mysqli->real_connect('10.16.224.10', 'proldan', Object(SensitiveParameterValue), 'jusea_cmn', 3306, '', 0)
+#1 C:\Users\pablo\OneDrive\Documentos\GitHub\JuseaRepository\vendor\codeigniter4\framework\system\Database\BaseConnection.php(555): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#2 C:\Users\pablo\OneDrive\Documentos\GitHub\JuseaRepository\vendor\codeigniter4\framework\system\Database\BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+#3 C:\Users\pablo\OneDrive\Documentos\GitHub\JuseaRepository\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT *\nFROM `...', Array, false)
+#4 C:\Users\pablo\OneDrive\Documentos\GitHub\JuseaRepository\vendor\codeigniter4\framework\system\Model.php(295): CodeIgniter\Database\BaseBuilder->get()
+#5 C:\Users\pablo\OneDrive\Documentos\GitHub\JuseaRepository\vendor\codeigniter4\framework\system\BaseModel.php(714): CodeIgniter\Model->doFirst()
+#6 C:\Users\pablo\OneDrive\Documentos\GitHub\JuseaRepository\app\Models\UsuarioModel.php(71): CodeIgniter\BaseModel->first()
+#7 C:\Users\pablo\OneDrive\Documentos\GitHub\JuseaRepository\app\Controllers\AuthController.php(40): App\Models\UsuarioModel->autenticar('admin', 'password')
+#8 C:\Users\pablo\OneDrive\Documentos\GitHub\JuseaRepository\vendor\codeigniter4\framework\system\CodeIgniter.php(951): App\Controllers\AuthController->authenticate()
+#9 C:\Users\pablo\OneDrive\Documentos\GitHub\JuseaRepository\vendor\codeigniter4\framework\system\CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AuthController))
+#10 C:\Users\pablo\OneDrive\Documentos\GitHub\JuseaRepository\vendor\codeigniter4\framework\system\CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#11 C:\Users\pablo\OneDrive\Documentos\GitHub\JuseaRepository\vendor\codeigniter4\framework\system\Boot.php(417): CodeIgniter\CodeIgniter->run()
+#12 C:\Users\pablo\OneDrive\Documentos\GitHub\JuseaRepository\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#13 C:\Users\pablo\OneDrive\Documentos\GitHub\JuseaRepository\public\index.php(54): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#14 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: Access denied for user '****'@'%' to database 'jusea_cmn' in C:\Users\pablo\OneDrive\Documentos\GitHub\JuseaRepository\vendor\codeigniter4\framework\system\Database\MySQLi\Connection.php:231
+Stack trace:
+#0 C:\Users\pablo\OneDrive\Documentos\GitHub\JuseaRepository\vendor\codeigniter4\framework\system\Database\BaseConnection.php(555): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#1 C:\Users\pablo\OneDrive\Documentos\GitHub\JuseaRepository\vendor\codeigniter4\framework\system\Database\BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+#2 C:\Users\pablo\OneDrive\Documentos\GitHub\JuseaRepository\vendor\codeigniter4\framework\system\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT *\nFROM `...', Array, false)
+#3 C:\Users\pablo\OneDrive\Documentos\GitHub\JuseaRepository\vendor\codeigniter4\framework\system\Model.php(295): CodeIgniter\Database\BaseBuilder->get()
+#4 C:\Users\pablo\OneDrive\Documentos\GitHub\JuseaRepository\vendor\codeigniter4\framework\system\BaseModel.php(714): CodeIgniter\Model->doFirst()
+#5 C:\Users\pablo\OneDrive\Documentos\GitHub\JuseaRepository\app\Models\UsuarioModel.php(71): CodeIgniter\BaseModel->first()
+#6 C:\Users\pablo\OneDrive\Documentos\GitHub\JuseaRepository\app\Controllers\AuthController.php(40): App\Models\UsuarioModel->autenticar('admin', 'password')
+#7 C:\Users\pablo\OneDrive\Documentos\GitHub\JuseaRepository\vendor\codeigniter4\framework\system\CodeIgniter.php(951): App\Controllers\AuthController->authenticate()
+#8 C:\Users\pablo\OneDrive\Documentos\GitHub\JuseaRepository\vendor\codeigniter4\framework\system\CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AuthController))
+#9 C:\Users\pablo\OneDrive\Documentos\GitHub\JuseaRepository\vendor\codeigniter4\framework\system\CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#10 C:\Users\pablo\OneDrive\Documentos\GitHub\JuseaRepository\vendor\codeigniter4\framework\system\Boot.php(417): CodeIgniter\CodeIgniter->run()
+#11 C:\Users\pablo\OneDrive\Documentos\GitHub\JuseaRepository\vendor\codeigniter4\framework\system\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#12 C:\Users\pablo\OneDrive\Documentos\GitHub\JuseaRepository\public\index.php(54): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#13 {main}
+CRITICAL - 2026-05-01 10:09:39 --> CodeIgniter\Database\Exceptions\DatabaseException: Unable to connect to the database.
+Main connection [MySQLi]: Access denied for user '****'@'%' to database 'jusea_cmn'
+[Method: POST, Route: login]
+in SYSTEMPATH\Database\BaseConnection.php on line 606.
+ 1 SYSTEMPATH\Database\BaseConnection.php(795): CodeIgniter\Database\BaseConnection->initialize()
+ 2 SYSTEMPATH\Database\BaseBuilder.php(1649): CodeIgniter\Database\BaseConnection->query('SELECT *
+FROM `usuarios`
+WHERE `username` = :username:
+AND `activo` = :activo:
+ LIMIT 1', [...], false)
+ 3 SYSTEMPATH\Model.php(295): CodeIgniter\Database\BaseBuilder->get()
+ 4 SYSTEMPATH\BaseModel.php(714): CodeIgniter\Model->doFirst()
+ 5 APPPATH\Models\UsuarioModel.php(71): CodeIgniter\BaseModel->first()
+ 6 APPPATH\Controllers\AuthController.php(40): App\Models\UsuarioModel->autenticar('admin', 'password')
+ 7 SYSTEMPATH\CodeIgniter.php(951): App\Controllers\AuthController->authenticate()
+ 8 SYSTEMPATH\CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\AuthController))
+ 9 SYSTEMPATH\CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+10 SYSTEMPATH\Boot.php(417): CodeIgniter\CodeIgniter->run()
+11 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+12 FCPATH\index.php(54): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2026-05-01 10:11:40 --> Error: Class "ZipArchive" not found
+[Method: GET, Route: sancion/cuadros/revision/33]
+in VENDORPATH\phpoffice\phpword\src\PhpWord\Shared\ZipArchive.php on line 139.
+ 1 VENDORPATH\phpoffice\phpword\src\PhpWord\Writer\AbstractWriter.php(284): PhpOffice\PhpWord\Shared\ZipArchive->open('C:\\Users\\pablo\\OneDrive\\Documentos\\GitHub\\JuseaRepository\\writable\\documents\\docECFC.tmp.docx', 8)
+ 2 VENDORPATH\phpoffice\phpword\src\PhpWord\Writer\Word2007.php(98): PhpOffice\PhpWord\Writer\AbstractWriter->getZipArchive('C:\\Users\\pablo\\OneDrive\\Documentos\\GitHub\\JuseaRepository\\writable\\documents\\docECFC.tmp.docx')
+ 3 APPPATH\Libraries\DocumentGenerator.php(1394): PhpOffice\PhpWord\Writer\Word2007->save('C:\\Users\\pablo\\OneDrive\\Documentos\\GitHub\\JuseaRepository\\writable\\documents\\docECFC.tmp.docx')
+ 4 APPPATH\Libraries\DocumentGenerator.php(663): App\Libraries\DocumentGenerator->descargarDocx(Object(PhpOffice\PhpWord\PhpWord), 'Revision_cuadros_32539437')
+ 5 APPPATH\Controllers\SancionController.php(192): App\Libraries\DocumentGenerator->generarSancionRevisionCuadrosDocx([...], Object(stdClass))
+ 6 SYSTEMPATH\CodeIgniter.php(951): App\Controllers\SancionController->descargarRevisionCuadros(33)
+ 7 SYSTEMPATH\CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SancionController))
+ 8 SYSTEMPATH\CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH\Boot.php(417): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH\index.php(54): CodeIgniter\Boot::bootWeb(Object(Config\Paths))

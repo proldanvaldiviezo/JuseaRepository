@@ -1,9 +1,6 @@
 <?php
-
 namespace Config;
-
 use CodeIgniter\Database\Config;
-
 /**
  * JUSEA CMN v2.0 - Configuracion de Base de Datos
  *
@@ -38,16 +35,15 @@ class Database extends Config
         'foreignKeys' => true,
         'busyTimeout' => 1000,
     ];
-
     /**
      * Conexion principal
      */
     public array $default = [
         'DSN'          => '',
-        'hostname'     => 'localhost',
-        'username'     => 'root',
-        'password'     => '',
-        'database'     => 'jusea_cmn',
+        'hostname'     => '127.0.0.1',
+        'username'     => 'proldan',
+        'password'     => 'Colegio2026!',
+        'database'     => 'jusea',
         'DBDriver'     => 'MySQLi',
         'DBPrefix'     => '',
         'pConnect'     => false,
@@ -62,11 +58,9 @@ class Database extends Config
         'port'         => 3306,
         'numberNative' => false,
     ];
-
     public function __construct()
     {
         parent::__construct();
-
         // En produccion, desactivar debug SQL
         if (ENVIRONMENT === 'production') {
             $this->default['DBDebug'] = false;

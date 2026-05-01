@@ -12,7 +12,7 @@ class App extends BaseConfig
     /**
      * URL base del sitio.
      */
-    public string $baseURL = 'http://localhost/Jusea/JuseaCMN_v2/public/';
+    public string $baseURL = 'http://jusea.local/';
 
     /**
      * Caracteres permitidos en URIs

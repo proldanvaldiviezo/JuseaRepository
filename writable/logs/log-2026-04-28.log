@@ -1,0 +1,17 @@
+CRITICAL - 2026-04-28 11:35:29 --> Error: Class "ZipArchive" not found
+[Method: GET, Route: sancion/cuadros/descargar/31/docx]
+in VENDORPATH\phpoffice\phpword\src\PhpWord\Shared\ZipArchive.php on line 139.
+ 1 VENDORPATH\phpoffice\phpword\src\PhpWord\Writer\AbstractWriter.php(284): PhpOffice\PhpWord\Shared\ZipArchive->open()
+ 2 VENDORPATH\phpoffice\phpword\src\PhpWord\Writer\Word2007.php(98): PhpOffice\PhpWord\Writer\AbstractWriter->getZipArchive()
+ 3 APPPATH\Libraries\DocumentGenerator.php(1394): PhpOffice\PhpWord\Writer\Word2007->save()
+ 4 APPPATH\Libraries\DocumentGenerator.php(232): App\Libraries\DocumentGenerator->descargarDocx()
+ 5 APPPATH\Libraries\DocumentGenerator.php(63): App\Libraries\DocumentGenerator->generarSancionCuadrosDocx()
+ 6 APPPATH\Libraries\DocumentGenerator.php(55): App\Libraries\DocumentGenerator->generarSancionDocx()
+ 7 APPPATH\Controllers\SancionController.php(206): App\Libraries\DocumentGenerator->generarSancion()
+ 8 APPPATH\Controllers\SancionController.php(171): App\Controllers\SancionController->generarDocumento()
+ 9 SYSTEMPATH\CodeIgniter.php(951): App\Controllers\SancionController->descargarCuadros()
+10 SYSTEMPATH\CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+11 SYSTEMPATH\CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+12 SYSTEMPATH\Boot.php(417): CodeIgniter\CodeIgniter->run()
+13 SYSTEMPATH\Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+14 FCPATH\index.php(54): CodeIgniter\Boot::bootWeb()
