@@ -14,21 +14,14 @@ class ApiController extends Controller
      */
     public function buscarPersonaPorDni(): ResponseInterface
     {
-        $dni = $this->request->getGet('dni');
-        $tipo = $this->request->getGet('tipo') ?? '';
+        $dni = trim($this->request->getGet('dni') ?? '');
 
-        if (empty($dni) || strlen($dni) < 7) {
-            return $this->response->setJSON(['found' => false, 'message' => 'DNI invalido']);
+        if (strlen($dni) < 7) {
+            return $this->response->setJSON(['found' => false, 'message' => 'DNI inválido']);
         }
 
-        $model = new PersonaModel();
-
-        // Search by DNI, optionally filter by tipo
-        $builder = $model->where('dni', $dni)->where('activo', 1);
-        if (!empty($tipo)) {
-            $builder->where('tipo', $tipo);
-        }
-        $persona = $builder->first();
+        $model   = new PersonaModel();
+        $persona = $model->buscarPorDni($dni);
 
         if (!$persona) {
             return $this->response->setJSON(['found' => false, 'message' => 'No encontrado']);
@@ -36,17 +29,7 @@ class ApiController extends Controller
 
         return $this->response->setJSON([
             'found' => true,
-            'data' => [
-                'id' => $persona->id,
-                'dni' => $persona->dni,
-                'apellido' => $persona->apellido,
-                'nombre' => $persona->nombre ?? '',
-                'grado' => $persona->grado ?? '',
-                'arma_especialidad' => $persona->arma_especialidad ?? '',
-                'destino_interno' => $persona->destino_interno ?? '',
-                'cargo' => $persona->cargo ?? '',
-                'tipo' => $persona->tipo,
-            ]
+            'data'  => $this->personaToArray($persona),
         ]);
     }
 
@@ -56,36 +39,16 @@ class ApiController extends Controller
      */
     public function buscarPersonaPorApellido(): ResponseInterface
     {
-        $q = $this->request->getGet('q');
-        $tipo = $this->request->getGet('tipo') ?? '';
+        $q = trim($this->request->getGet('q') ?? '');
 
-        if (empty($q) || strlen($q) < 2) {
+        if (strlen($q) < 2) {
             return $this->response->setJSON([]);
         }
 
-        $model = new PersonaModel();
-        $builder = $model->like('apellido', $q, 'both')->where('activo', 1);
-        if (!empty($tipo)) {
-            $builder->where('tipo', $tipo);
-        }
-        $personas = $builder->orderBy('apellido', 'ASC')->findAll(15);
+        $model    = new PersonaModel();
+        $personas = $model->buscarPorApellido($q);
 
-        $results = [];
-        foreach ($personas as $p) {
-            $results[] = [
-                'id' => $p->id,
-                'dni' => $p->dni,
-                'apellido' => $p->apellido,
-                'nombre' => $p->nombre ?? '',
-                'grado' => $p->grado ?? '',
-                'arma_especialidad' => $p->arma_especialidad ?? '',
-                'destino_interno' => $p->destino_interno ?? '',
-                'cargo' => $p->cargo ?? '',
-                'tipo' => $p->tipo,
-            ];
-        }
-
-        return $this->response->setJSON($results);
+        return $this->response->setJSON(array_map([$this, 'personaToArray'], $personas));
     }
 
     /**
@@ -94,36 +57,31 @@ class ApiController extends Controller
      */
     public function buscarPersonaPorNombre(): ResponseInterface
     {
-        $q = $this->request->getGet('q');
-        $tipo = $this->request->getGet('tipo') ?? '';
+        $q = trim($this->request->getGet('q') ?? '');
 
-        if (empty($q) || strlen($q) < 2) {
+        if (strlen($q) < 2) {
             return $this->response->setJSON([]);
         }
 
-        $model = new PersonaModel();
-        $builder = $model->like('nombre', $q, 'both')->where('activo', 1);
-        if (!empty($tipo)) {
-            $builder->where('tipo', $tipo);
-        }
-        $personas = $builder->orderBy('apellido', 'ASC')->findAll(15);
+        $model    = new PersonaModel();
+        $personas = $model->buscarPorNombre($q);
 
-        $results = [];
-        foreach ($personas as $p) {
-            $results[] = [
-                'id' => $p->id,
-                'dni' => $p->dni,
-                'apellido' => $p->apellido,
-                'nombre' => $p->nombre ?? '',
-                'grado' => $p->grado ?? '',
-                'arma_especialidad' => $p->arma_especialidad ?? '',
-                'destino_interno' => $p->destino_interno ?? '',
-                'cargo' => $p->cargo ?? '',
-                'tipo' => $p->tipo,
-            ];
-        }
+        return $this->response->setJSON(array_map([$this, 'personaToArray'], $personas));
+    }
 
-        return $this->response->setJSON($results);
+    private function personaToArray(object $p): array
+    {
+        return [
+            'id'               => $p->id,
+            'dni'              => $p->dni,
+            'apellido'         => $p->apellido,
+            'nombre'           => $p->nombre           ?? '',
+            'grado'            => $p->grado            ?? '',
+            'arma_especialidad'=> $p->arma_especialidad ?? '',
+            'destino_interno'  => '',
+            'cargo'            => '',
+            'tipo'             => '',
+        ];
     }
 
     // =========================================================================

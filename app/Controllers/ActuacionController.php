@@ -91,7 +91,7 @@ class ActuacionController extends Controller
             return redirect()->back()->withInput()->with('error', 'No se recibieron datos del formulario.');
         }
 
-        $resultado = $this->model->registrar($tipo, $campos, (int) session()->get('usuario_id'));
+        $resultado = $this->model->registrar($tipo, $campos, (string) session()->get('usuario_id'));
 
         if (!$resultado['success']) {
             return redirect()->back()

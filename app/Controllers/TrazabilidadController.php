@@ -155,7 +155,7 @@ class TrazabilidadController extends Controller
             'responsable_cargo'  => trim($post['responsable_cargo']  ?? ''),
             'observaciones'      => trim($post['observaciones']      ?? ''),
             'fecha_entrada'      => $fechaEntrada,
-        ], (int) session()->get('usuario_id'));
+        ], (string) session()->get('usuario_id'));
 
         if (!$resultado['success']) {
             $errMsg = implode(', ', $resultado['errors']);

@@ -47,10 +47,11 @@ class AuthController extends Controller
 
         // Establecer sesión
         session()->set([
-            'usuario_id'      => $usuario->id,
+            'usuario_id'      => $usuario->id,       // NVARCHAR(450) GUID
             'usuario_nombre'  => $usuario->nombre_completo,
             'usuario_rol'     => $usuario->rol,
             'usuario_username'=> $usuario->username,
+            'usuario_grado'   => $usuario->grado ?? '',
             'logged_in'       => true,
         ]);
 

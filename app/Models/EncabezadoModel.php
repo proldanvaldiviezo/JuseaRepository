@@ -8,7 +8,7 @@ use CodeIgniter\Model;
  */
 class EncabezadoModel extends Model
 {
-    protected $table         = 'encabezado';
+    protected $table         = 'JUSEA_Encabezado';
     protected $primaryKey    = 'id';
     protected $returnType    = 'object';
     protected $allowedFields = ['anio', 'membrete', 'unidad', 'updated_by'];
@@ -20,17 +20,23 @@ class EncabezadoModel extends Model
     ];
 
     /**
-     * Obtener el encabezado vigente (siempre es registro id=1).
+     * Obtener el encabezado vigente. Si la tabla está vacía retorna valores por defecto
+     * para que los documentos puedan generarse aunque aún no se haya configurado.
      */
-    public function obtenerVigente(): ?object
+    public function obtenerVigente(): object
     {
-        return $this->first();
+        return $this->first() ?? (object)[
+            'id'       => null,
+            'anio'     => date('Y'),
+            'membrete' => '',
+            'unidad'   => 'Colegio Militar de la Nación',
+        ];
     }
 
     /**
      * Actualizar encabezado institucional.
      */
-    public function actualizarEncabezado(array $data, int $usuarioId): bool
+    public function actualizarEncabezado(array $data, string $usuarioId): bool
     {
         $data['updated_by'] = $usuarioId;
         $encabezado = $this->first();

@@ -4,7 +4,10 @@ namespace App\Models;
 use CodeIgniter\Model;
 
 /**
- * UsuarioModel — v2
+ * UsuarioModel — v3 (SQL Server / AspNetUsers)
+ * Autenticacion contra AspNetUsers con PBKDF2-HMAC (ASP.NET Core Identity).
+ * Roles JUSEA almacenados en JUSEA_UsuarioRol.
+ *
  * ROLES:
  *   admin    — Control total (usuarios, config, todo)
  *   jefe     — Jefe División: operaciones completas, sin gestión usuarios
@@ -13,29 +16,12 @@ use CodeIgniter\Model;
  */
 class UsuarioModel extends Model
 {
-    protected $table         = 'usuarios';
-    protected $primaryKey    = 'id';
-    protected $returnType    = 'object';
-    protected $allowedFields = [
-        'username', 'password_hash', 'nombre_completo',
-        'email', 'rol', 'activo', 'ultimo_acceso'
-    ];
-    protected $useTimestamps = true;
-    protected $createdField  = 'created_at';
-    protected $updatedField  = 'updated_at';
-
-    protected $validationRules = [
-        'username'        => 'required|min_length[3]|max_length[50]|is_unique[usuarios.username,id,{id}]',
-        'nombre_completo' => 'required|min_length[3]|max_length[150]',
-        'email'           => 'permit_empty|valid_email',
-        'rol'             => 'required|in_list[admin,jefe,operador,consulta]',
-    ];
-
-    protected $validationMessages = [
-        'username' => ['is_unique' => 'El nombre de usuario ya existe.'],
-    ];
-
-    // ── Catálogo de roles ─────────────────────────────────────────────────
+    protected $table            = 'AspNetUsers';
+    protected $primaryKey       = 'Id';
+    protected $useAutoIncrement = false;
+    protected $returnType       = 'object';
+    protected $allowedFields    = [];
+    protected $useTimestamps    = false;
 
     public static array $roles = [
         'admin'    => ['label' => 'Administrador', 'badge' => 'bg-danger',
@@ -48,75 +34,141 @@ class UsuarioModel extends Model
                        'desc'  => 'Solo lectura — historial y padrón'],
     ];
 
-    /**
-     * Verifica si un rol tiene permiso para una acción (delega a PermisosModel — BD).
-     */
     public static function puede(string $accion, string $rol): bool
     {
         return \App\Models\PermisosModel::puede($accion, $rol);
     }
 
-    /**
-     * Verifica si el usuario de la sesión actual tiene permiso para una acción.
-     */
     public static function puedeActual(string $accion): bool
     {
         return self::puede($accion, session()->get('usuario_rol') ?? '');
+    }
+
+    // ── Verificación de password ASP.NET Core Identity ───────────────────
+
+    private function verificarPasswordAspNet(string $password, string $hash): bool
+    {
+        if (empty($hash)) return false;
+
+        $decoded = base64_decode($hash, true);
+        if ($decoded === false || strlen($decoded) < 13) return false;
+
+        $version = ord($decoded[0]);
+
+        if ($version === 1) {
+            // V3: PBKDF2-HMAC-SHA256
+            $iterations = unpack('N', substr($decoded, 5, 4))[1];
+            $saltLen    = unpack('N', substr($decoded, 9, 4))[1];
+            if (strlen($decoded) < 13 + $saltLen) return false;
+            $salt     = substr($decoded, 13, $saltLen);
+            $expected = substr($decoded, 13 + $saltLen);
+            $derived  = hash_pbkdf2('sha256', $password, $salt, $iterations, strlen($expected), true);
+            return hash_equals($expected, $derived);
+        }
+
+        if ($version === 0) {
+            // V2: PBKDF2-HMAC-SHA1, 1000 iteraciones
+            if (strlen($decoded) < 49) return false;
+            $salt     = substr($decoded, 1, 16);
+            $expected = substr($decoded, 17);
+            $derived  = hash_pbkdf2('sha1', $password, $salt, 1000, strlen($expected), true);
+            return hash_equals($expected, $derived);
+        }
+
+        return false;
     }
 
     // ── Autenticación ─────────────────────────────────────────────────────
 
     public function autenticar(string $username, string $password): ?object
     {
-        $usuario = $this->where('username', $username)->where('activo', 1)->first();
-        if (!$usuario || !password_verify($password, $usuario->password_hash)) {
-            return null;
-        }
-        try {
-            $this->db->table($this->table)
-                     ->where('id', $usuario->id)
-                     ->update(['ultimo_acceso' => date('Y-m-d H:i:s')]);
-        } catch (\Throwable $e) {
-            log_message('error', 'JUSEA: fallo ultimo_acceso — ' . $e->getMessage());
-        }
+        $row = $this->db->table('AspNetUsers')
+            ->select('AspNetUsers.Id, AspNetUsers.UserName, AspNetUsers.PasswordHash,
+                      AspNetUsers.Nombre, AspNetUsers.Apellido, AspNetUsers.display,
+                      AspNetUsers.DNI, AspNetUsers.GRADO, AspNetUsers.bajaUnidad,
+                      JUSEA_UsuarioRol.rol, JUSEA_UsuarioRol.activo AS activo_jusea')
+            ->join('JUSEA_UsuarioRol', 'JUSEA_UsuarioRol.user_id = AspNetUsers.Id', 'inner')
+            ->where('AspNetUsers.UserName', $username)
+            ->where('JUSEA_UsuarioRol.activo', 1)
+            ->where('AspNetUsers.bajaUnidad', 0)
+            ->get()->getRow();
+
+        if (!$row) return null;
+        if (!$this->verificarPasswordAspNet($password, $row->PasswordHash)) return null;
+
+        $usuario                  = new \stdClass();
+        $usuario->id              = $row->Id;
+        $usuario->username        = $row->UserName;
+        $usuario->nombre_completo = trim(($row->Nombre ?? '') . ' ' . ($row->Apellido ?? ''))
+                                    ?: ($row->display ?? $row->UserName);
+        $usuario->rol             = $row->rol;
+        $usuario->activo          = (bool) $row->activo_jusea;
+        $usuario->dni             = $row->DNI;
+        $usuario->grado           = $row->GRADO;
+
         return $usuario;
     }
 
-    // ── CRUD ──────────────────────────────────────────────────────────────
-
-    public function crearUsuario(array $data): bool|int
-    {
-        $data['password_hash'] = password_hash($data['password'], PASSWORD_BCRYPT, ['cost' => 12]);
-        unset($data['password'], $data['password_confirm']);
-        return $this->insert($data);
-    }
-
-    public function cambiarPassword(int $id, string $nueva): bool
-    {
-        return (bool) $this->db->table($this->table)->where('id', $id)
-            ->update(['password_hash' => password_hash($nueva, PASSWORD_BCRYPT, ['cost' => 12])]);
-    }
-
-    public function desactivar(int $id): bool
-    {
-        return (bool) $this->db->table($this->table)->where('id', $id)->update(['activo' => 0]);
-    }
-
-    public function reactivar(int $id): bool
-    {
-        return (bool) $this->db->table($this->table)->where('id', $id)->update(['activo' => 1]);
-    }
+    // ── Consultas ─────────────────────────────────────────────────────────
 
     public function obtenerTodos(): array
     {
-        return $this->orderBy('activo', 'DESC')
-                    ->orderBy('rol', 'ASC')
-                    ->orderBy('nombre_completo', 'ASC')
-                    ->findAll();
+        return $this->db->table('AspNetUsers')
+            ->select('AspNetUsers.Id, AspNetUsers.UserName,
+                      AspNetUsers.Nombre, AspNetUsers.Apellido, AspNetUsers.display,
+                      AspNetUsers.DNI, AspNetUsers.GRADO, AspNetUsers.bajaUnidad,
+                      JUSEA_UsuarioRol.rol, JUSEA_UsuarioRol.activo AS activo_jusea')
+            ->join('JUSEA_UsuarioRol', 'JUSEA_UsuarioRol.user_id = AspNetUsers.Id', 'inner')
+            ->orderBy('JUSEA_UsuarioRol.activo', 'DESC')
+            ->orderBy('JUSEA_UsuarioRol.rol', 'ASC')
+            ->orderBy('AspNetUsers.Apellido', 'ASC')
+            ->get()->getResultObject();
     }
 
     public function obtenerActivos(): array
     {
-        return $this->where('activo', 1)->orderBy('nombre_completo', 'ASC')->findAll();
+        return $this->db->table('AspNetUsers')
+            ->select('AspNetUsers.Id, AspNetUsers.UserName,
+                      AspNetUsers.Nombre, AspNetUsers.Apellido, AspNetUsers.display,
+                      AspNetUsers.DNI, AspNetUsers.GRADO,
+                      JUSEA_UsuarioRol.rol')
+            ->join('JUSEA_UsuarioRol', 'JUSEA_UsuarioRol.user_id = AspNetUsers.Id', 'inner')
+            ->where('JUSEA_UsuarioRol.activo', 1)
+            ->where('AspNetUsers.bajaUnidad', 0)
+            ->orderBy('AspNetUsers.Apellido', 'ASC')
+            ->get()->getResultObject();
+    }
+
+    // ── Gestión de roles JUSEA ────────────────────────────────────────────
+
+    /**
+     * Asigna o actualiza el rol JUSEA de un usuario de AspNetUsers.
+     * Si no tiene entrada en JUSEA_UsuarioRol, la crea.
+     */
+    public function asignarRol(string $userId, string $rol): bool
+    {
+        $existe = $this->db->table('JUSEA_UsuarioRol')
+            ->where('user_id', $userId)->get()->getRow();
+
+        if ($existe) {
+            return (bool) $this->db->table('JUSEA_UsuarioRol')
+                ->where('user_id', $userId)
+                ->update(['rol' => $rol, 'activo' => 1]);
+        }
+
+        return (bool) $this->db->table('JUSEA_UsuarioRol')
+            ->insert(['user_id' => $userId, 'rol' => $rol, 'activo' => 1]);
+    }
+
+    public function desactivar(string $id): bool
+    {
+        return (bool) $this->db->table('JUSEA_UsuarioRol')
+            ->where('user_id', $id)->update(['activo' => 0]);
+    }
+
+    public function reactivar(string $id): bool
+    {
+        return (bool) $this->db->table('JUSEA_UsuarioRol')
+            ->where('user_id', $id)->update(['activo' => 1]);
     }
 }

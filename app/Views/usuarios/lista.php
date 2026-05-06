@@ -76,7 +76,7 @@ foreach ($statDef as $key => $sd):
             <th>Nombre Completo</th>
             <th style="width:140px">Rol</th>
             <th class="d-none d-md-table-cell">Email</th>
-            <th class="d-none d-lg-table-cell">Último Acceso</th>
+            <th class="d-none d-lg-table-cell">Grado</th>
             <th style="width:60px">Estado</th>
             <th style="width:150px">Acciones</th>
         </tr>
@@ -86,53 +86,47 @@ foreach ($statDef as $key => $sd):
     <tr><td colspan="8" class="text-center text-muted py-4">No hay usuarios registrados.</td></tr>
     <?php else: ?>
     <?php foreach ($usuarios as $u):
-        $ri    = $roles[$u->rol] ?? ['label' => $u->rol, 'badge' => 'bg-secondary'];
-        $esMio = ((int)$u->id === (int)$idActual);
+        $ri        = $roles[$u->rol] ?? ['label' => $u->rol, 'badge' => 'bg-secondary'];
+        $esMio     = ($u->Id === $idActual);
+        $nombreMostrar = trim(($u->Apellido ?? '') . ', ' . ($u->Nombre ?? ''));
     ?>
-    <tr class="<?= !$u->activo ? 'table-secondary opacity-75' : '' ?>">
-        <td class="text-muted small"><?= $u->id ?></td>
+    <tr class="<?= !$u->activo_jusea ? 'table-secondary opacity-75' : '' ?>">
+        <td class="text-muted small" style="max-width:80px;overflow:hidden;text-overflow:ellipsis"><?= esc(substr($u->Id, 0, 8)) ?>…</td>
         <td>
-            <span class="fw-semibold font-monospace"><?= esc($u->username) ?></span>
+            <span class="fw-semibold font-monospace"><?= esc($u->UserName) ?></span>
             <?php if ($esMio): ?>
             <span class="badge bg-info text-dark ms-1 small">Yo</span>
             <?php endif; ?>
         </td>
-        <td><?= esc($u->nombre_completo) ?></td>
+        <td><?= esc($nombreMostrar ?: ($u->display ?? $u->UserName)) ?></td>
         <td>
             <span class="badge <?= $ri['badge'] ?>"><?= $ri['label'] ?></span>
         </td>
-        <td class="small d-none d-md-table-cell text-muted"><?= esc($u->email ?? '—') ?></td>
-        <td class="small d-none d-lg-table-cell text-muted">
-            <?= $u->ultimo_acceso ? date('d/m/Y H:i', strtotime($u->ultimo_acceso)) : 'Nunca' ?>
-        </td>
+        <td class="small d-none d-md-table-cell text-muted"><?= esc($u->Email ?? '—') ?></td>
+        <td class="small d-none d-lg-table-cell text-muted"><?= esc($u->GRADO ?? '—') ?></td>
         <td>
-            <?php if ($u->activo): ?>
+            <?php if ($u->activo_jusea): ?>
             <span class="badge bg-success small">Activo</span>
             <?php else: ?>
             <span class="badge bg-danger small">Inactivo</span>
             <?php endif; ?>
         </td>
         <td>
-            <!-- Editar -->
-            <a href="<?= site_url('usuarios/editar/' . $u->id) ?>"
-               class="btn btn-xs btn-outline-secondary me-1" title="Editar datos">
+            <!-- Editar rol -->
+            <a href="<?= site_url('usuarios/editar/' . $u->Id) ?>"
+               class="btn btn-xs btn-outline-secondary me-1" title="Editar rol">
                 <i class="bi bi-pencil-fill"></i>
-            </a>
-            <!-- Cambiar password -->
-            <a href="<?= site_url('usuarios/cambiar-password/' . $u->id) ?>"
-               class="btn btn-xs btn-outline-primary me-1" title="Cambiar contraseña">
-                <i class="bi bi-key-fill"></i>
             </a>
             <?php if (!$esMio): ?>
             <!-- Desactivar / Reactivar -->
-            <?php if ($u->activo): ?>
+            <?php if ($u->activo_jusea): ?>
             <button type="button" class="btn btn-xs btn-outline-danger"
                     title="Desactivar usuario"
-                    onclick="confirmarBaja(<?= $u->id ?>, '<?= addslashes($u->nombre_completo) ?>', '<?= esc($u->username) ?>')">
+                    onclick="confirmarBaja('<?= $u->Id ?>', '<?= addslashes($nombreMostrar) ?>', '<?= addslashes($u->UserName) ?>')">
                 <i class="bi bi-person-dash-fill"></i>
             </button>
             <?php else: ?>
-            <form method="POST" action="<?= site_url('usuarios/reactivar/' . $u->id) ?>" style="display:inline">
+            <form method="POST" action="<?= site_url('usuarios/reactivar/' . $u->Id) ?>" style="display:inline">
                 <?= csrf_field() ?>
                 <button type="submit" class="btn btn-xs btn-outline-success" title="Reactivar usuario">
                     <i class="bi bi-person-check-fill"></i>

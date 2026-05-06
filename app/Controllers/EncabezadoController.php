@@ -49,7 +49,7 @@ class EncabezadoController extends Controller
 
         $resultado = $this->encabezadoModel->actualizarEncabezado(
             $data,
-            (int) session()->get('usuario_id')
+            (string) session()->get('usuario_id')
         );
 
         if ($resultado) {

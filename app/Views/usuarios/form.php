@@ -1,9 +1,9 @@
 <?php
 /**
- * Vista: Usuarios — formulario nuevo/editar
+ * Vista: Usuarios — formulario nuevo/editar rol JUSEA
  * Variables: $usuario (null=nuevo), $roles, $esNuevo
  */
-$titulo = $esNuevo ? 'Nuevo Usuario' : 'Editar Usuario';
+$titulo = $esNuevo ? 'Agregar Acceso JUSEA' : 'Editar Rol JUSEA';
 ?>
 
 <div class="d-flex align-items-center gap-3 mb-4">
@@ -12,7 +12,11 @@ $titulo = $esNuevo ? 'Nuevo Usuario' : 'Editar Usuario';
     </a>
     <div>
         <h2 class="mb-0 fw-bold" style="font-size:1.25rem"><?= $titulo ?></h2>
-        <p class="text-muted mb-0 small"><?= $esNuevo ? 'Registrar nuevo acceso al sistema' : 'Modificar datos del usuario' ?></p>
+        <p class="text-muted mb-0 small">
+            <?= $esNuevo
+                ? 'Busca un usuario existente del sistema Partes y asígnale un rol en JUSEA.'
+                : 'Modificar el nivel de acceso al sistema JUSEA.' ?>
+        </p>
     </div>
 </div>
 
@@ -27,6 +31,12 @@ $titulo = $esNuevo ? 'Nuevo Usuario' : 'Editar Usuario';
     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
 </div>
 <?php endif; ?>
+<?php if (session()->getFlashdata('error')): ?>
+<div class="alert alert-danger alert-dismissible fade show py-2">
+    <i class="bi bi-exclamation-triangle me-1"></i> <?= session()->getFlashdata('error') ?>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+<?php endif; ?>
 
 <div class="row justify-content-center">
 <div class="col-md-8 col-lg-6">
@@ -34,49 +44,41 @@ $titulo = $esNuevo ? 'Nuevo Usuario' : 'Editar Usuario';
 <div class="card-body p-4">
 
 <form method="POST"
-      action="<?= $esNuevo ? site_url('usuarios/guardar') : site_url('usuarios/actualizar/' . $usuario->id) ?>">
+      action="<?= $esNuevo ? site_url('usuarios/guardar') : site_url('usuarios/actualizar/' . $usuario->Id) ?>">
     <?= csrf_field() ?>
 
-    <!-- Username -->
+    <?php if ($esNuevo): ?>
+    <!-- Username (búsqueda en AspNetUsers) -->
     <div class="mb-3">
         <label class="form-label fw-semibold">
             <i class="bi bi-person-badge me-1" style="color:var(--ea-blue)"></i>
-            Nombre de usuario <span class="text-danger">*</span>
+            Nombre de usuario (sistema Partes) <span class="text-danger">*</span>
         </label>
         <input type="text" name="username" class="form-control"
-               value="<?= esc(old('username', $usuario->username ?? '')) ?>"
+               value="<?= esc(old('username')) ?>"
                placeholder="ej: gonzalez.m"
                autocomplete="username" required>
-        <div class="form-text">Mínimo 3 caracteres. No se puede repetir.</div>
+        <div class="form-text">El usuario debe existir en el sistema Partes. Las contraseñas se gestionan allí.</div>
     </div>
-
-    <!-- Nombre completo -->
+    <?php else: ?>
+    <!-- Info del usuario (solo lectura) -->
     <div class="mb-3">
-        <label class="form-label fw-semibold">
-            <i class="bi bi-person-fill me-1" style="color:var(--ea-blue)"></i>
-            Nombre completo <span class="text-danger">*</span>
-        </label>
-        <input type="text" name="nombre_completo" class="form-control"
-               value="<?= esc(old('nombre_completo', $usuario->nombre_completo ?? '')) ?>"
-               placeholder="ej: MY González Fidani, Martín" required>
+        <label class="form-label fw-semibold text-muted">Usuario</label>
+        <div class="form-control bg-light font-monospace"><?= esc($usuario->UserName ?? '') ?></div>
     </div>
-
-    <!-- Email -->
     <div class="mb-3">
-        <label class="form-label fw-semibold">
-            <i class="bi bi-envelope-fill me-1" style="color:var(--ea-blue)"></i>
-            Correo electrónico
-        </label>
-        <input type="email" name="email" class="form-control"
-               value="<?= esc(old('email', $usuario->email ?? '')) ?>"
-               placeholder="ej: gonzalez@ejercito.mil.ar">
+        <label class="form-label fw-semibold text-muted">Nombre y Apellido</label>
+        <div class="form-control bg-light">
+            <?= esc(trim(($usuario->Apellido ?? '') . ', ' . ($usuario->Nombre ?? '')) ?: '—') ?>
+        </div>
     </div>
+    <?php endif; ?>
 
     <!-- Rol -->
     <div class="mb-4">
         <label class="form-label fw-semibold">
             <i class="bi bi-shield-fill me-1" style="color:var(--ea-blue)"></i>
-            Nivel de acceso <span class="text-danger">*</span>
+            Nivel de acceso JUSEA <span class="text-danger">*</span>
         </label>
         <select name="rol" class="form-select" id="selectRol" onchange="actualizarDescRol()" required>
             <?php foreach ($roles as $key => $r): ?>
@@ -90,26 +92,10 @@ $titulo = $esNuevo ? 'Nuevo Usuario' : 'Editar Usuario';
         <div id="descRol" class="form-text mt-1"></div>
     </div>
 
-    <?php if ($esNuevo): ?>
-    <hr class="my-3">
-    <p class="text-muted small fw-semibold mb-2"><i class="bi bi-key-fill me-1"></i>Contraseña inicial</p>
-
-    <div class="mb-3">
-        <label class="form-label">Contraseña <span class="text-danger">*</span></label>
-        <input type="password" name="password" class="form-control"
-               placeholder="Mínimo 8 caracteres" autocomplete="new-password" required>
-    </div>
-    <div class="mb-4">
-        <label class="form-label">Confirmar contraseña <span class="text-danger">*</span></label>
-        <input type="password" name="password_confirm" class="form-control"
-               placeholder="Repita la contraseña" autocomplete="new-password" required>
-    </div>
-    <?php endif; ?>
-
     <div class="d-flex gap-2">
         <button type="submit" class="btn btn-ea-blue">
             <i class="bi bi-floppy-fill me-1"></i>
-            <?= $esNuevo ? 'Crear Usuario' : 'Guardar Cambios' ?>
+            <?= $esNuevo ? 'Otorgar Acceso' : 'Guardar Cambios' ?>
         </button>
         <a href="<?= site_url('usuarios') ?>" class="btn btn-outline-secondary">Cancelar</a>
     </div>

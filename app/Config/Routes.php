@@ -74,23 +74,11 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
         $routes->post('accidente/adjunto/eliminar/(:num)',  'ActuacionController::eliminarAdjuntoAccidente/$1', ['filter' => 'role:admin,jefe']);
     });
 
-    // --- Padrón de Personal CMN ---
+    // --- Padrón de Personal CMN (solo lectura — datos en AspNetUsers) ---
     $routes->group('personal', function ($routes) {
-        // Lista y exportar: todos los roles autenticados
-        $routes->get('/',                    'PersonalController::index');
-        $routes->get('exportar',             'PersonalController::exportar');
-        $routes->get('historial/(:num)',     'PersonalController::historial/$1');
-
-        // Alta, edicion, desactivar, importar: admin + jefe
-        $routes->get('nuevo',                 'PersonalController::nuevo',         ['filter' => 'role:admin,jefe']);
-        $routes->post('guardar',              'PersonalController::guardar',       ['filter' => 'role:admin,jefe']);
-        $routes->get('editar/(:num)',         'PersonalController::editar/$1',     ['filter' => 'role:admin,jefe']);
-        $routes->post('actualizar/(:num)',    'PersonalController::actualizar/$1', ['filter' => 'role:admin,jefe']);
-        $routes->post('eliminar/(:num)',      'PersonalController::eliminar/$1',   ['filter' => 'role:admin,jefe']);
-        $routes->post('reactivar/(:num)',     'PersonalController::reactivar/$1',  ['filter' => 'role:admin,jefe']);
-        $routes->get('importar',             'PersonalController::importar',      ['filter' => 'role:admin,jefe']);
-        $routes->post('importar',            'PersonalController::importar',      ['filter' => 'role:admin,jefe']);
-        $routes->post('accion-masiva',       'PersonalController::accionMasiva',  ['filter' => 'role:admin,jefe']);
+        $routes->get('/',                      'PersonalController::index');
+        $routes->get('exportar',               'PersonalController::exportar');
+        $routes->get('historial/(:segment)',   'PersonalController::historial/$1');
     });
 
     // --- Historial de Sanciones ---
@@ -108,15 +96,13 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
 
     // --- Administracion de usuarios (solo admin) ---
     $routes->group('usuarios', ['filter' => 'role:admin'], function ($routes) {
-        $routes->get('/',                        'UsuarioController::index');
-        $routes->get('nuevo',                    'UsuarioController::nuevo');
-        $routes->post('guardar',                 'UsuarioController::guardar');
-        $routes->get('editar/(:num)',            'UsuarioController::editar/$1');
-        $routes->post('actualizar/(:num)',       'UsuarioController::actualizar/$1');
-        $routes->get('cambiar-password/(:num)', 'UsuarioController::cambiarPassword/$1');
-        $routes->post('cambiar-password/(:num)','UsuarioController::cambiarPassword/$1');
-        $routes->post('desactivar/(:num)',       'UsuarioController::desactivar/$1');
-        $routes->post('reactivar/(:num)',        'UsuarioController::reactivar/$1');
+        $routes->get('/',                          'UsuarioController::index');
+        $routes->get('nuevo',                      'UsuarioController::nuevo');
+        $routes->post('guardar',                   'UsuarioController::guardar');
+        $routes->get('editar/(:segment)',          'UsuarioController::editar/$1');
+        $routes->post('actualizar/(:segment)',     'UsuarioController::actualizar/$1');
+        $routes->post('desactivar/(:segment)',     'UsuarioController::desactivar/$1');
+        $routes->post('reactivar/(:segment)',      'UsuarioController::reactivar/$1');
     });
 
     // --- Configuracion de permisos (solo admin) ---

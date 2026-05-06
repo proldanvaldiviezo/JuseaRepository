@@ -10,7 +10,7 @@ use CodeIgniter\Model;
  */
 class TrazabilidadModel extends Model
 {
-    protected $table      = 'trazabilidad';
+    protected $table      = 'JUSEA_Trazabilidad';
     protected $primaryKey = 'id';
     protected $returnType = 'array';
 
@@ -165,7 +165,7 @@ class TrazabilidadModel extends Model
      */
     public function panelActivos(?string $tipo = null, ?string $area = null): array
     {
-        $builder = $this->db->table('trazabilidad');
+        $builder = $this->db->table('JUSEA_Trazabilidad');
         $builder->select('id, tipo_expediente, id_expediente, nro_expediente,
                           area, area_label, estado_paso,
                           responsable_nombre, responsable_cargo,
@@ -209,7 +209,7 @@ class TrazabilidadModel extends Model
      *                      fecha_entrada, observaciones (opcionales: id_responsable, nro_expediente)
      * @param int $usuarioId
      */
-    public function registrarPaso(array $datos, int $usuarioId): array
+    public function registrarPaso(array $datos, string $usuarioId): array
     {
         $db = \Config\Database::connect();
         $db->transStart();
@@ -222,7 +222,7 @@ class TrazabilidadModel extends Model
             // Cerrar el paso activo anterior (registrar fecha_salida)
             $pasoActual = $this->obtenerPasoActual($tipo, $idExp);
             if ($pasoActual) {
-                $this->db->table('trazabilidad')
+                $this->db->table('JUSEA_Trazabilidad')
                     ->where('id', $pasoActual['id'])
                     ->update([
                         'fecha_salida' => $datos['fecha_entrada'] ?? $ahora,

@@ -14,7 +14,7 @@ use CodeIgniter\Model;
  */
 class ActuacionModel extends Model
 {
-    protected $table         = 'actuaciones';
+    protected $table         = 'JUSEA_Actuaciones';
     protected $primaryKey    = 'id';
     protected $returnType    = 'object';
     protected $allowedFields = [
@@ -42,7 +42,7 @@ class ActuacionModel extends Model
      * @param int    $usuarioId
      * @return array ['success'=>bool, 'id'=>int|null, 'errors'=>array]
      */
-    public function registrar(string $tipo, array $campos, int $usuarioId): array
+    public function registrar(string $tipo, array $campos, string $usuarioId): array
     {
         $data = [
             'tipo'              => $tipo,
@@ -104,7 +104,7 @@ class ActuacionModel extends Model
      */
     public function obtenerPorPersona(string $apellido, string $tipo, string $dni = ''): array
     {
-        $builder = $this->db->table('actuaciones');
+        $builder = $this->db->table('JUSEA_Actuaciones');
         $builder->select('id, tipo, nro_expediente, causante_apellido, causante_grado, estado, created_at, datos');
         $builder->where('tipo', $tipo);
         $builder->like('causante_apellido', $apellido, 'both');

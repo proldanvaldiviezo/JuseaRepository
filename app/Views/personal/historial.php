@@ -4,14 +4,7 @@
  * Variables: $persona, $sanciones (array), $bienes (array), $accidentes (array)
  */
 
-$tiposLabel = [
-    'cuadro'     => ['label' => 'Cuadro',     'badge' => 'bg-primary'],
-    'cadete'     => ['label' => 'Cadete',     'badge' => 'bg-warning text-dark'],
-    'instructor' => ['label' => 'Instructor', 'badge' => 'bg-success'],
-    'autoridad'  => ['label' => 'Autoridad',  'badge' => 'bg-danger'],
-    'civil'      => ['label' => 'Civil',      'badge' => 'bg-secondary'],
-];
-$tl = $tiposLabel[$persona->tipo] ?? ['label' => $persona->tipo, 'badge' => 'bg-secondary'];
+$personaActiva = !($persona->bajaUnidad ?? false);
 
 $totalSanciones  = count($sanciones);
 $totalBienes     = count($bienes);
@@ -67,13 +60,9 @@ function badgeEstado(string $estado): string {
                 <div class="fw-semibold"><?= esc($persona->grado ?? '—') ?></div>
             </div>
             <div class="col-6 col-md-3">
-                <div class="small text-muted mb-1">Tipo</div>
-                <div><span class="badge <?= $tl['badge'] ?>"><?= $tl['label'] ?></span></div>
-            </div>
-            <div class="col-6 col-md-3">
                 <div class="small text-muted mb-1">Estado</div>
                 <div>
-                    <?php if ($persona->activo): ?>
+                    <?php if ($personaActiva): ?>
                     <span class="badge bg-success">Activo</span>
                     <?php else: ?>
                     <span class="badge bg-danger">Inactivo</span>
@@ -84,18 +73,6 @@ function badgeEstado(string $estado): string {
             <div class="col-6 col-md-3">
                 <div class="small text-muted mb-1">Arma / Especialidad</div>
                 <div><?= esc($persona->arma_especialidad) ?></div>
-            </div>
-            <?php endif; ?>
-            <?php if (!empty($persona->destino_interno)): ?>
-            <div class="col-6 col-md-3">
-                <div class="small text-muted mb-1">Destino Interno</div>
-                <div><?= esc($persona->destino_interno) ?></div>
-            </div>
-            <?php endif; ?>
-            <?php if (!empty($persona->cargo)): ?>
-            <div class="col-6 col-md-3">
-                <div class="small text-muted mb-1">Cargo</div>
-                <div><?= esc($persona->cargo) ?></div>
             </div>
             <?php endif; ?>
         </div>

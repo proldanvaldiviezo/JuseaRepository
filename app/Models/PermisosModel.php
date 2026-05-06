@@ -13,7 +13,7 @@ use CodeIgniter\Model;
  */
 class PermisosModel extends Model
 {
-    protected $table         = 'permisos';
+    protected $table         = 'JUSEA_Permisos';
     protected $primaryKey    = 'id';
     protected $returnType    = 'object';
     protected $allowedFields = ['accion', 'etiqueta', 'admin', 'jefe', 'operador', 'consulta', 'orden'];

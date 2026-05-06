@@ -5,9 +5,9 @@ use App\Models\UsuarioModel;
 use CodeIgniter\Controller;
 
 /**
- * UsuarioController — v2
- * Gestión completa de usuarios del sistema JUSEA CMN.
- * Exclusivo para administradores.
+ * UsuarioController — v3 (SQL Server / AspNetUsers)
+ * Gestión de acceso JUSEA: asigna/modifica rol en JUSEA_UsuarioRol.
+ * No crea ni modifica usuarios en AspNetUsers (gestionado por sistema Partes).
  */
 class UsuarioController extends Controller
 {
@@ -22,16 +22,16 @@ class UsuarioController extends Controller
 
     public function index()
     {
-        $usuarios   = $this->model->obtenerTodos();
-        $roles      = UsuarioModel::$roles;
-        $rolActual  = session()->get('usuario_rol');
-        $idActual   = session()->get('usuario_id');
+        $usuarios  = $this->model->obtenerTodos();
+        $roles     = UsuarioModel::$roles;
+        $rolActual = session()->get('usuario_rol');
+        $idActual  = session()->get('usuario_id');
 
         $stats = [];
         foreach (array_keys($roles) as $r) {
-            $stats[$r] = count(array_filter($usuarios, fn($u) => $u->rol === $r && $u->activo));
+            $stats[$r] = count(array_filter($usuarios, fn($u) => $u->rol === $r && $u->activo_jusea));
         }
-        $stats['inactivos'] = count(array_filter($usuarios, fn($u) => !$u->activo));
+        $stats['inactivos'] = count(array_filter($usuarios, fn($u) => !$u->activo_jusea));
 
         return view('layouts/main', [
             'titulo'    => 'Gestión de Usuarios',
@@ -40,29 +40,29 @@ class UsuarioController extends Controller
         ]);
     }
 
-    // ─── Nuevo ────────────────────────────────────────────────────────────
+    // ─── Agregar acceso JUSEA ─────────────────────────────────────────────
 
     public function nuevo()
     {
         return view('layouts/main', [
-            'titulo'    => 'Nuevo Usuario',
+            'titulo'    => 'Agregar Acceso JUSEA',
             'contenido' => view('usuarios/form', [
-                'usuario'  => null,
-                'roles'    => UsuarioModel::$roles,
-                'esNuevo'  => true,
+                'usuario' => null,
+                'roles'   => UsuarioModel::$roles,
+                'esNuevo' => true,
             ]),
         ]);
     }
 
+    /**
+     * Busca el username en AspNetUsers y le asigna un rol JUSEA.
+     * No crea usuarios — solo habilita el acceso al sistema JUSEA.
+     */
     public function guardar()
     {
         $rules = [
-            'username'         => 'required|min_length[3]|max_length[50]|is_unique[usuarios.username]',
-            'nombre_completo'  => 'required|min_length[3]|max_length[150]',
-            'email'            => 'permit_empty|valid_email',
-            'rol'              => 'required|in_list[admin,jefe,operador,consulta]',
-            'password'         => 'required|min_length[8]',
-            'password_confirm' => 'required|matches[password]',
+            'username' => 'required|min_length[3]|max_length[256]',
+            'rol'      => 'required|in_list[admin,jefe,operador,consulta]',
         ];
 
         if (!$this->validate($rules)) {
@@ -70,120 +70,94 @@ class UsuarioController extends Controller
                 ->with('errors', $this->validator->getErrors());
         }
 
-        $this->model->crearUsuario($this->request->getPost());
+        $username = $this->request->getPost('username');
+        $rol      = $this->request->getPost('rol');
+
+        // Verificar que el usuario existe en AspNetUsers
+        $aspUser = \Config\Database::connect()
+            ->table('AspNetUsers')
+            ->select('Id, UserName, Nombre, Apellido')
+            ->where('UserName', $username)
+            ->get()->getRow();
+
+        if (!$aspUser) {
+            return redirect()->back()->withInput()
+                ->with('error', "El usuario «{$username}» no existe en el sistema Partes.");
+        }
+
+        $this->model->asignarRol($aspUser->Id, $rol);
 
         return redirect()->to(site_url('usuarios'))
-            ->with('success', 'Usuario creado correctamente.');
+            ->with('success', "Acceso JUSEA otorgado a {$aspUser->Nombre} {$aspUser->Apellido} ({$rol}).");
     }
 
-    // ─── Editar ───────────────────────────────────────────────────────────
+    // ─── Editar rol ───────────────────────────────────────────────────────
 
-    public function editar(int $id)
+    public function editar(string $id)
     {
-        $usuario = $this->model->find($id);
+        $usuario = $this->buscarUsuarioPorId($id);
         if (!$usuario) {
             return redirect()->to(site_url('usuarios'))->with('error', 'Usuario no encontrado.');
         }
+
         return view('layouts/main', [
-            'titulo'    => 'Editar Usuario',
+            'titulo'    => 'Editar Acceso JUSEA',
             'contenido' => view('usuarios/form', [
-                'usuario'  => $usuario,
-                'roles'    => UsuarioModel::$roles,
-                'esNuevo'  => false,
+                'usuario' => $usuario,
+                'roles'   => UsuarioModel::$roles,
+                'esNuevo' => false,
             ]),
         ]);
     }
 
-    public function actualizar(int $id)
+    public function actualizar(string $id)
     {
-        $usuario = $this->model->find($id);
+        $usuario = $this->buscarUsuarioPorId($id);
         if (!$usuario) {
             return redirect()->to(site_url('usuarios'))->with('error', 'Usuario no encontrado.');
         }
 
         // No permitir que el único admin se quite el rol admin
         if ($usuario->rol === 'admin' && $this->request->getPost('rol') !== 'admin') {
-            $adminsActivos = $this->model->where('rol', 'admin')->where('activo', 1)->countAllResults();
+            $adminsActivos = \Config\Database::connect()
+                ->table('JUSEA_UsuarioRol')
+                ->where('rol', 'admin')->where('activo', 1)->countAllResults();
             if ($adminsActivos <= 1) {
                 return redirect()->back()->withInput()
                     ->with('error', 'No puede cambiar el rol del único administrador activo del sistema.');
             }
         }
 
-        $rules = [
-            'username'        => "required|min_length[3]|max_length[50]|is_unique[usuarios.username,id,{$id}]",
-            'nombre_completo' => 'required|min_length[3]|max_length[150]',
-            'email'           => 'permit_empty|valid_email',
-            'rol'             => 'required|in_list[admin,jefe,operador,consulta]',
-        ];
-
+        $rules = ['rol' => 'required|in_list[admin,jefe,operador,consulta]'];
         if (!$this->validate($rules)) {
             return redirect()->back()->withInput()
                 ->with('errors', $this->validator->getErrors());
         }
 
-        $data = [
-            'id'              => $id,
-            'username'        => $this->request->getPost('username'),
-            'nombre_completo' => $this->request->getPost('nombre_completo'),
-            'email'           => $this->request->getPost('email'),
-            'rol'             => $this->request->getPost('rol'),
-        ];
-        $this->model->save($data);
+        $this->model->asignarRol($id, $this->request->getPost('rol'));
 
         return redirect()->to(site_url('usuarios'))
-            ->with('success', 'Usuario actualizado correctamente.');
-    }
-
-    // ─── Cambiar contraseña ───────────────────────────────────────────────
-
-    public function cambiarPassword(int $id)
-    {
-        $usuario = $this->model->find($id);
-        if (!$usuario) {
-            return redirect()->to(site_url('usuarios'))->with('error', 'Usuario no encontrado.');
-        }
-
-        if ($this->request->getMethod() !== 'post') {
-            return view('layouts/main', [
-                'titulo'    => 'Cambiar Contraseña — ' . $usuario->nombre_completo,
-                'contenido' => view('usuarios/cambiar_password', compact('usuario')),
-            ]);
-        }
-
-        $rules = [
-            'password'         => 'required|min_length[8]',
-            'password_confirm' => 'required|matches[password]',
-        ];
-        if (!$this->validate($rules)) {
-            return redirect()->back()->withInput()
-                ->with('errors', $this->validator->getErrors());
-        }
-
-        $this->model->cambiarPassword($id, $this->request->getPost('password'));
-
-        return redirect()->to(site_url('usuarios'))
-            ->with('success', 'Contraseña de ' . $usuario->nombre_completo . ' actualizada.');
+            ->with('success', 'Rol actualizado correctamente.');
     }
 
     // ─── Baja / Reactivar ─────────────────────────────────────────────────
 
-    public function desactivar(int $id)
+    public function desactivar(string $id)
     {
-        // No puede darse de baja a sí mismo
-        if ($id === (int) session()->get('usuario_id')) {
+        if ($id === session()->get('usuario_id')) {
             return redirect()->to(site_url('usuarios'))
                 ->with('error', 'No puede desactivar su propia cuenta.');
         }
 
-        $usuario = $this->model->find($id);
+        $usuario = $this->buscarUsuarioPorId($id);
         if (!$usuario) {
             return redirect()->to(site_url('usuarios'))->with('error', 'Usuario no encontrado.');
         }
 
-        // No permitir dar de baja al único admin activo
         if ($usuario->rol === 'admin') {
-            $adminsActivos = $this->model->where('rol', 'admin')->where('activo', 1)->countAllResults();
+            $adminsActivos = \Config\Database::connect()
+                ->table('JUSEA_UsuarioRol')
+                ->where('rol', 'admin')->where('activo', 1)->countAllResults();
             if ($adminsActivos <= 1) {
                 return redirect()->to(site_url('usuarios'))
                     ->with('error', 'No puede desactivar el único administrador activo del sistema.');
@@ -192,17 +166,31 @@ class UsuarioController extends Controller
 
         $this->model->desactivar($id);
         return redirect()->to(site_url('usuarios'))
-            ->with('success', 'Usuario ' . $usuario->username . ' desactivado.');
+            ->with('success', 'Usuario ' . $usuario->UserName . ' desactivado.');
     }
 
-    public function reactivar(int $id)
+    public function reactivar(string $id)
     {
-        $usuario = $this->model->find($id);
+        $usuario = $this->buscarUsuarioPorId($id);
         if (!$usuario) {
             return redirect()->to(site_url('usuarios'))->with('error', 'Usuario no encontrado.');
         }
         $this->model->reactivar($id);
         return redirect()->to(site_url('usuarios'))
-            ->with('success', 'Usuario ' . $usuario->username . ' reactivado.');
+            ->with('success', 'Usuario ' . $usuario->UserName . ' reactivado.');
+    }
+
+    // ─── Helper ───────────────────────────────────────────────────────────
+
+    private function buscarUsuarioPorId(string $id): ?object
+    {
+        return \Config\Database::connect()
+            ->table('AspNetUsers')
+            ->select('AspNetUsers.Id, AspNetUsers.UserName, AspNetUsers.Nombre,
+                      AspNetUsers.Apellido, AspNetUsers.DNI, AspNetUsers.GRADO,
+                      JUSEA_UsuarioRol.rol, JUSEA_UsuarioRol.activo AS activo_jusea')
+            ->join('JUSEA_UsuarioRol', 'JUSEA_UsuarioRol.user_id = AspNetUsers.Id', 'inner')
+            ->where('AspNetUsers.Id', $id)
+            ->get()->getRow();
     }
 }

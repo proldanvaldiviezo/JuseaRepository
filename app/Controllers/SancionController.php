@@ -72,45 +72,13 @@ class SancionController extends Controller
 
         $post = $this->request->getPost();
 
-        // Preparar datos del infractor
-        $datosInfractor = [
-            'dni'               => trim($post['dni_infractor']),
-            'apellido'          => mb_strtoupper(trim($post['apellido_infractor'])),
-            'nombre'            => mb_strtoupper(trim($post['nombre_infractor'])),
-            'grado'             => trim($post['grado_infractor']),
-            'arma_especialidad' => trim($post['arma_infractor'] ?? ''),
-            'destino_interno'   => trim($post['destino_infractor'] ?? ''),
-            'tipo'              => ($tipo === 'cadetes') ? 'cadete' : 'cuadro',
-        ];
+        // Buscar causante e instructor en AspNetUsers por DNI
+        $personaModel = new \App\Models\PersonaModel();
+        $idCausante   = $personaModel->obtenerIdPorDni(trim($post['dni_infractor']  ?? ''));
+        $idAutoridad  = $personaModel->obtenerIdPorDni(trim($post['dni_instructor'] ?? ''));
 
-        // Preparar datos del instructor/autoridad
-        $datosInstructor = [
-            'dni'               => trim($post['dni_instructor']),
-            'apellido'          => mb_strtoupper(trim($post['apellido_instructor'])),
-            'nombre'            => mb_strtoupper(trim($post['nombre_instructor'] ?? '-')),
-            'grado'             => trim($post['grado_instructor']),
-            'arma_especialidad' => '',
-            'destino_interno'   => '',
-            'cargo'             => trim($post['cargo_instructor'] ?? ''),
-            'tipo'              => 'autoridad',
-        ];
-
-        // Preparar datos del revisor (cadetes Y cuadros - para planilla ANEXO 2)
-        // El campo DNI del revisor puede venir como 'revisor_dni' (cuadros form) o 'dni_revisor' (cadetes form)
+        // Datos del revisor para la infracción (solo campos de texto, no FK)
         $dniRevisor = trim($post['revisor_dni'] ?? $post['dni_revisor'] ?? '');
-        $datosRevisor = null;
-        if (!empty($dniRevisor)) {
-            $datosRevisor = [
-                'dni'               => $dniRevisor,
-                'apellido'          => mb_strtoupper(trim($post['revisor_nombre'] ?? $post['apellido_revisor'] ?? '')),
-                'nombre'            => '',
-                'grado'             => trim($post['revisor_grado'] ?? $post['grado_revisor'] ?? ''),
-                'arma_especialidad' => '',
-                'destino_interno'   => '',
-                'cargo'             => trim($post['revisor_cargo'] ?? $post['cargo_revisor'] ?? ''),
-                'tipo'              => 'autoridad',
-            ];
-        }
 
         // Preparar datos de la infracción
         $datosInfraccion = [
@@ -124,23 +92,19 @@ class SancionController extends Controller
             'cargo_autoridad'     => trim($post['cargo_instructor'] ?? ''),
             'letra'               => mb_strtoupper(trim($post['letra'] ?? '')),
             'nro'                 => trim($post['nro'] ?? ''),
+            'revisor_grado'       => trim($post['revisor_grado']  ?? $post['grado_revisor']  ?? ''),
+            'revisor_nombre'      => mb_strtoupper(trim($post['revisor_nombre'] ?? $post['apellido_revisor'] ?? '')),
+            'revisor_dni'         => $dniRevisor,
+            'revisor_cargo'       => trim($post['revisor_cargo']  ?? $post['cargo_revisor']  ?? ''),
         ];
-
-        // Datos del revisor (tanto cuadros como cadetes)
-        if ($datosRevisor) {
-            $datosInfraccion['revisor_grado']   = $datosRevisor['grado'];
-            $datosInfraccion['revisor_nombre']  = $datosRevisor['apellido'];
-            $datosInfraccion['revisor_dni']     = $datosRevisor['dni'];
-            $datosInfraccion['revisor_cargo']   = $datosRevisor['cargo'];
-        }
 
         // Registrar con transacción
         $resultado = $this->sancionModel->registrarSancionCompleta(
-            $datosInfractor,
-            $datosInstructor,
+            $idCausante  ?? '',
+            $idAutoridad ?? '',
             $datosInfraccion,
             $tipo,
-            (int) session()->get('usuario_id')
+            (string) session()->get('usuario_id')
         );
 
         if (!$resultado['success']) {

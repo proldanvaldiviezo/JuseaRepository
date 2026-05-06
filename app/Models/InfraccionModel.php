@@ -8,7 +8,7 @@ use CodeIgniter\Model;
  */
 class InfraccionModel extends Model
 {
-    protected $table         = 'infracciones';
+    protected $table         = 'JUSEA_Infracciones';
     protected $primaryKey    = 'id';
     protected $returnType    = 'object';
     protected $allowedFields = [
