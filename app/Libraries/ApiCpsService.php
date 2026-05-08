@@ -75,4 +75,70 @@ class ApiCpsService
             'access_token' => $data['access_token'],
         ];
     }
+
+    /**
+     * Busca los datos completos de un integrante por DNI.
+     * Requiere un token válido obtenido previamente con login().
+     *
+     * @return array{dni:string, nombre:string, apellido:string, grado:string, arma:string, username:string}|null
+     *         null → no encontrado o token expirado
+     * @throws \RuntimeException si no se puede conectar
+     */
+    public function buscarPorDni(string $dni, string $token): ?array
+    {
+        $url  = $this->baseUrl . '/personal';
+        $body = json_encode(['dni' => (int) $dni]);
+
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST           => true,
+            CURLOPT_POSTFIELDS     => $body,
+            CURLOPT_HTTPHEADER     => [
+                'Content-Type: application/json',
+                'Accept: application/json',
+                'Authorization: Bearer ' . $token,
+            ],
+            CURLOPT_TIMEOUT        => $this->timeout,
+            CURLOPT_CONNECTTIMEOUT => $this->timeout,
+            CURLOPT_SSL_VERIFYPEER => $this->sslVerify,
+            CURLOPT_SSL_VERIFYHOST => $this->sslVerify ? 2 : 0,
+        ]);
+
+        $response  = curl_exec($ch);
+        $httpCode  = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($ch);
+        curl_close($ch);
+
+        if ($response === false || $curlError !== '') {
+            log_message('error', '[ApiCpsService::buscarPorDni] curl error: ' . $curlError);
+            throw new \RuntimeException('No se pudo conectar con el servidor de autenticación: ' . $curlError);
+        }
+
+        if ($httpCode === 401 || $httpCode === 403) {
+            return null;
+        }
+
+        if ($httpCode < 200 || $httpCode >= 300) {
+            throw new \RuntimeException('El servidor de autenticación respondió con código ' . $httpCode);
+        }
+
+        $lista = json_decode($response, true);
+
+        if (empty($lista) || !is_array($lista)) {
+            return null;
+        }
+
+        $p = $lista[0];
+
+        return [
+            'dni'      => (string) ($p['dni']               ?? $dni),
+            'nombre'   => $p['first_name']                  ?? '',
+            'apellido' => $p['last_name']                   ?? '',
+            'grado'    => $p['rank_code']                   ?? '',
+            'arma'     => $p['arm_abbreviation']            ?? '',
+            'username' => $p['username']                    ?? (string) $dni,
+            'display'  => $p['display']                     ?? '',
+        ];
+    }
 }

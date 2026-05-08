@@ -1,15 +1,15 @@
 <?php
 namespace App\Controllers;
 
+use App\Libraries\ApiCpsService;
 use App\Models\PersonaModel;
 use App\Models\SancionModel;
 use App\Models\ActuacionModel;
 use CodeIgniter\Controller;
 
 /**
- * PersonalController — v3 (SQL Server / AspNetUsers)
- * Padrón de personal: solo lectura desde AspNetUsers.
- * Las altas/bajas/modificaciones se gestionan desde el sistema Partes.
+ * PersonalController — v4 (SQL Server / AspNetUsers)
+ * Padrón de personal: alta desde APICPS, baja lógica (bajaUnidad).
  */
 class PersonalController extends Controller
 {
@@ -123,6 +123,133 @@ class PersonalController extends Controller
             'contenido' => view('personal/historial',
                 compact('persona', 'sanciones', 'bienes', 'accidentes')),
         ]);
+    }
+
+    // =========================================================
+    // ALTA DESDE APICPS
+    // =========================================================
+
+    public function nuevo()
+    {
+        return view('layouts/main', [
+            'titulo'    => 'Alta de Personal',
+            'contenido' => view('personal/nuevo'),
+        ]);
+    }
+
+    /**
+     * AJAX — busca un DNI en APICPS y devuelve los datos del integrante.
+     * GET personal/buscar-apicps?dni=XXXXX
+     */
+    public function buscarEnApicps()
+    {
+        $dni   = trim($this->request->getGet('dni') ?? '');
+        $token = session()->get('apicps_token') ?? '';
+
+        if ($dni === '' || !ctype_digit($dni)) {
+            return $this->response->setJSON(['ok' => false, 'msg' => 'DNI inválido.']);
+        }
+
+        if ($token === '') {
+            return $this->response->setJSON([
+                'ok'  => false,
+                'msg' => 'Sesión APICPS expirada. Por favor cierre sesión y vuelva a ingresar.',
+            ]);
+        }
+
+        try {
+            $apicps = new ApiCpsService();
+            $datos  = $apicps->buscarPorDni($dni, $token);
+        } catch (\RuntimeException $e) {
+            log_message('error', '[PersonalController::buscarEnApicps] ' . $e->getMessage());
+            return $this->response->setJSON([
+                'ok'  => false,
+                'msg' => 'No se pudo conectar con el servidor de autenticación.',
+            ]);
+        }
+
+        if ($datos === null) {
+            return $this->response->setJSON([
+                'ok'  => false,
+                'msg' => 'No se encontró ningún integrante con ese DNI en la APICPS.',
+            ]);
+        }
+
+        // Informar si ya existe en el padrón local
+        $yaExiste = $this->model->existePorDni($dni);
+
+        return $this->response->setJSON([
+            'ok'       => true,
+            'datos'    => $datos,
+            'yaExiste' => $yaExiste,
+        ]);
+    }
+
+    /**
+     * POST — guarda el integrante encontrado en APICPS en AspNetUsers.
+     */
+    public function guardar()
+    {
+        $dni = trim($this->request->getPost('dni') ?? '');
+
+        if ($dni === '' || !ctype_digit($dni)) {
+            return redirect()->to(site_url('personal/nuevo'))
+                ->with('error', 'DNI inválido.');
+        }
+
+        if ($this->model->existePorDni($dni)) {
+            return redirect()->to(site_url('personal'))
+                ->with('error', 'El integrante con DNI ' . $dni . ' ya se encuentra en el padrón.');
+        }
+
+        $data = [
+            'dni'      => $this->request->getPost('dni'),
+            'nombre'   => $this->request->getPost('nombre'),
+            'apellido' => $this->request->getPost('apellido'),
+            'grado'    => $this->request->getPost('grado'),
+            'arma'     => $this->request->getPost('arma'),
+            'display'  => $this->request->getPost('display'),
+        ];
+
+        if (!$this->model->insertar($data)) {
+            return redirect()->to(site_url('personal/nuevo'))
+                ->with('error', 'Error al guardar el integrante. Intente nuevamente.');
+        }
+
+        return redirect()->to(site_url('personal'))
+            ->with('success', 'Integrante ' . esc($data['apellido']) . ', ' . esc($data['nombre']) . ' dado de alta correctamente.');
+    }
+
+    // =========================================================
+    // BAJA / REACTIVACIÓN LÓGICA
+    // =========================================================
+
+    public function darBaja(string $id)
+    {
+        $persona = $this->model->obtenerPorId($id);
+        if (!$persona) {
+            return redirect()->to(site_url('personal'))
+                ->with('error', 'Integrante no encontrado.');
+        }
+
+        $this->model->darBaja($id);
+
+        return redirect()->to(site_url('personal'))
+            ->with('success', 'Integrante ' . esc($persona->apellido ?? $id) . ' dado de baja.');
+    }
+
+    public function reactivar(string $id)
+    {
+        $persona = $this->model->obtenerPorId($id);
+        if (!$persona) {
+            return redirect()->to(site_url('personal'))
+                ->with('error', 'Integrante no encontrado.');
+        }
+
+        $this->model->reactivarPersona($id);
+
+        return redirect()->to(site_url('personal?activo=0'))
+            ->with('success', 'Integrante ' . esc($persona->apellido ?? $id) . ' reactivado.');
     }
 
     // =========================================================

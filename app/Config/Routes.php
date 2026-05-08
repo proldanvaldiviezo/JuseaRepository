@@ -74,11 +74,18 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
         $routes->post('accidente/adjunto/eliminar/(:num)',  'ActuacionController::eliminarAdjuntoAccidente/$1', ['filter' => 'role:admin,jefe']);
     });
 
-    // --- Padrón de Personal CMN (solo lectura — datos en AspNetUsers) ---
+    // --- Padrón de Personal CMN ---
     $routes->group('personal', function ($routes) {
         $routes->get('/',                      'PersonalController::index');
         $routes->get('exportar',               'PersonalController::exportar');
         $routes->get('historial/(:segment)',   'PersonalController::historial/$1');
+
+        // Alta / Baja (admin y jefe)
+        $routes->get('nuevo',                  'PersonalController::nuevo',           ['filter' => 'role:admin,jefe']);
+        $routes->get('buscar-apicps',          'PersonalController::buscarEnApicps',  ['filter' => 'role:admin,jefe']);
+        $routes->post('guardar',               'PersonalController::guardar',         ['filter' => 'role:admin,jefe']);
+        $routes->post('dar-baja/(:segment)',   'PersonalController::darBaja/$1',      ['filter' => 'role:admin,jefe']);
+        $routes->post('reactivar/(:segment)',  'PersonalController::reactivar/$1',    ['filter' => 'role:admin,jefe']);
     });
 
     // --- Historial de Sanciones ---

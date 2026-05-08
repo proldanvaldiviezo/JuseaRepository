@@ -76,4 +76,48 @@ class PersonaModel extends Model
             ->orderBy('AspNetUsers.Apellido', 'ASC')
             ->get()->getResultObject();
     }
+
+    public function existePorDni(string $dni): bool
+    {
+        return $this->db->table('AspNetUsers')
+            ->where('DNI', $dni)
+            ->countAllResults() > 0;
+    }
+
+    /**
+     * Inserta un nuevo integrante en AspNetUsers desde datos de APICPS.
+     * Id = UserName = DNI (convención del sistema).
+     */
+    public function insertar(array $data): bool
+    {
+        return (bool) $this->db->table('AspNetUsers')->insert([
+            'Id'                 => $data['dni'],
+            'UserName'           => $data['dni'],
+            'NormalizedUserName' => strtoupper($data['dni']),
+            'DNI'                => $data['dni'],
+            'Nombre'             => $data['nombre']   ?? null,
+            'Apellido'           => $data['apellido'] ?? null,
+            'GRADO'              => $data['grado']    ?? null,
+            'ARMA'               => $data['arma']     ?? null,
+            'display'            => $data['display']  ?? null,
+            'PasswordHash'       => '',
+            'SecurityStamp'      => strtoupper(bin2hex(random_bytes(16))),
+            'ConcurrencyStamp'   => strtolower(bin2hex(random_bytes(16))),
+            'bajaUnidad'         => 0,
+        ]);
+    }
+
+    public function darBaja(string $id): bool
+    {
+        return (bool) $this->db->table('AspNetUsers')
+            ->where('Id', $id)
+            ->update(['bajaUnidad' => 1]);
+    }
+
+    public function reactivarPersona(string $id): bool
+    {
+        return (bool) $this->db->table('AspNetUsers')
+            ->where('Id', $id)
+            ->update(['bajaUnidad' => 0]);
+    }
 }

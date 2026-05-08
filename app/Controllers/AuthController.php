@@ -85,6 +85,7 @@ class AuthController extends Controller
             'usuario_username'=> $usuario->username,
             'usuario_grado'   => $usuario->grado,
             'logged_in'       => true,
+            'apicps_token'    => $resultado['access_token'],
         ]);
 
         return redirect()->to(site_url('dashboard'))

@@ -11,10 +11,15 @@
          style="width:52px;height:52px;background:rgba(26,58,107,.12);">
         <i class="bi bi-people-fill fs-4" style="color:var(--ea-blue)"></i>
     </div>
-    <div>
+    <div class="flex-grow-1">
         <h2 class="mb-0 fw-bold" style="font-size:1.25rem;">Padrón de Personal CMN</h2>
-        <p class="text-muted mb-0 small">Base de datos del personal — datos gestionados desde el sistema Partes</p>
+        <p class="text-muted mb-0 small">Base de datos del personal</p>
     </div>
+    <?php if (\App\Models\UsuarioModel::puedeActual('personal_alta')): ?>
+    <a href="<?= site_url('personal/nuevo') ?>" class="btn btn-sm btn-ea-blue">
+        <i class="bi bi-person-plus-fill me-1"></i> Alta de Personal
+    </a>
+    <?php endif; ?>
 </div>
 
 <!-- Estadísticas -->
@@ -131,10 +136,12 @@
                         </td>
                     </tr>
                     <?php else: ?>
-                    <?php foreach ($personas as $p):
-                        $activo = !($p->bajaUnidad ?? false);
+                    <?php
+                    $puedeGestion = \App\Models\UsuarioModel::puedeActual('personal_alta');
+                    foreach ($personas as $p):
+                        $estaActivo = !($p->bajaUnidad ?? false);
                     ?>
-                    <tr class="<?= !$activo ? 'table-secondary opacity-75' : '' ?>">
+                    <tr class="<?= !$estaActivo ? 'table-secondary opacity-75' : '' ?>">
                         <td class="font-monospace small"><?= esc($p->dni) ?></td>
                         <td class="fw-semibold small"><?= esc($p->grado ?? '') ?></td>
                         <td>
@@ -142,23 +149,44 @@
                             <?php if (!empty($p->nombre)): ?>
                             <span class="text-muted">, <?= esc($p->nombre) ?></span>
                             <?php endif; ?>
-                            <?php if (!$activo): ?>
+                            <?php if (!$estaActivo): ?>
                             <span class="badge bg-danger ms-1 small">Inactivo</span>
                             <?php endif; ?>
                         </td>
                         <td class="small d-none d-lg-table-cell text-muted"><?= esc($p->arma_especialidad ?? '—') ?></td>
                         <td>
-                            <?php if ($activo): ?>
+                            <?php if ($estaActivo): ?>
                             <span class="badge bg-success small">Activo</span>
                             <?php else: ?>
                             <span class="badge bg-danger small">Inactivo</span>
                             <?php endif; ?>
                         </td>
                         <td>
-                            <a href="<?= site_url('personal/historial/' . $p->id) ?>"
-                               class="btn btn-xs btn-outline-primary" title="Ver historial">
-                                <i class="bi bi-clock-history"></i>
-                            </a>
+                            <div class="d-flex gap-1">
+                                <a href="<?= site_url('personal/historial/' . $p->id) ?>"
+                                   class="btn btn-xs btn-outline-primary" title="Ver historial">
+                                    <i class="bi bi-clock-history"></i>
+                                </a>
+                                <?php if ($puedeGestion): ?>
+                                <?php if ($estaActivo): ?>
+                                <form method="POST" action="<?= site_url('personal/dar-baja/' . $p->id) ?>"
+                                      onsubmit="return confirm('¿Confirma dar de baja a <?= esc($p->apellido, 'js') ?>?')">
+                                    <?= csrf_field() ?>
+                                    <button type="submit" class="btn btn-xs btn-outline-danger" title="Dar de baja">
+                                        <i class="bi bi-person-dash"></i>
+                                    </button>
+                                </form>
+                                <?php else: ?>
+                                <form method="POST" action="<?= site_url('personal/reactivar/' . $p->id) ?>"
+                                      onsubmit="return confirm('¿Confirma reactivar a <?= esc($p->apellido, 'js') ?>?')">
+                                    <?= csrf_field() ?>
+                                    <button type="submit" class="btn btn-xs btn-outline-success" title="Reactivar">
+                                        <i class="bi bi-person-check"></i>
+                                    </button>
+                                </form>
+                                <?php endif; ?>
+                                <?php endif; ?>
+                            </div>
                         </td>
                     </tr>
                     <?php endforeach; ?>
