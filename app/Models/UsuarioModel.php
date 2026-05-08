@@ -44,69 +44,58 @@ class UsuarioModel extends Model
         return self::puede($accion, session()->get('usuario_rol') ?? '');
     }
 
-    // ── Verificación de password ASP.NET Core Identity ───────────────────
+    // ── Autenticación vía APICPS ──────────────────────────────────────────
 
-    private function verificarPasswordAspNet(string $password, string $hash): bool
-    {
-        if (empty($hash)) return false;
-
-        $decoded = base64_decode($hash, true);
-        if ($decoded === false || strlen($decoded) < 13) return false;
-
-        $version = ord($decoded[0]);
-
-        if ($version === 1) {
-            // V3: PBKDF2-HMAC-SHA256
-            $iterations = unpack('N', substr($decoded, 5, 4))[1];
-            $saltLen    = unpack('N', substr($decoded, 9, 4))[1];
-            if (strlen($decoded) < 13 + $saltLen) return false;
-            $salt     = substr($decoded, 13, $saltLen);
-            $expected = substr($decoded, 13 + $saltLen);
-            $derived  = hash_pbkdf2('sha256', $password, $salt, $iterations, strlen($expected), true);
-            return hash_equals($expected, $derived);
-        }
-
-        if ($version === 0) {
-            // V2: PBKDF2-HMAC-SHA1, 1000 iteraciones
-            if (strlen($decoded) < 49) return false;
-            $salt     = substr($decoded, 1, 16);
-            $expected = substr($decoded, 17);
-            $derived  = hash_pbkdf2('sha1', $password, $salt, 1000, strlen($expected), true);
-            return hash_equals($expected, $derived);
-        }
-
-        return false;
-    }
-
-    // ── Autenticación ─────────────────────────────────────────────────────
-
-    public function autenticar(string $username, string $password): ?object
+    /**
+     * Busca el usuario en AspNetUsers por DNI (LEFT JOIN con JUSEA_UsuarioRol).
+     * Retorna null si bajaUnidad = 1 (dado de baja en el sistema Partes).
+     */
+    public function obtenerPorDni(string $dni): ?object
     {
         $row = $this->db->table('AspNetUsers')
-            ->select('AspNetUsers.Id, AspNetUsers.UserName, AspNetUsers.PasswordHash,
+            ->select('AspNetUsers.Id, AspNetUsers.UserName,
                       AspNetUsers.Nombre, AspNetUsers.Apellido, AspNetUsers.display,
                       AspNetUsers.DNI, AspNetUsers.GRADO, AspNetUsers.bajaUnidad,
                       JUSEA_UsuarioRol.rol, JUSEA_UsuarioRol.activo AS activo_jusea')
-            ->join('JUSEA_UsuarioRol', 'JUSEA_UsuarioRol.user_id = AspNetUsers.Id', 'inner')
-            ->where('AspNetUsers.UserName', $username)
-            ->where('JUSEA_UsuarioRol.activo', 1)
-            ->where('AspNetUsers.bajaUnidad', 0)
+            ->join('JUSEA_UsuarioRol', 'JUSEA_UsuarioRol.user_id = AspNetUsers.Id', 'left')
+            ->where('AspNetUsers.DNI', $dni)
             ->get()->getRow();
 
         if (!$row) return null;
-        if (!$this->verificarPasswordAspNet($password, $row->PasswordHash)) return null;
+
+        // Bloquear si fue dado de baja en Partes
+        if ((int) ($row->bajaUnidad ?? 0) === 1) return null;
 
         $usuario                  = new \stdClass();
         $usuario->id              = $row->Id;
         $usuario->username        = $row->UserName;
-        $usuario->nombre_completo = trim(($row->Nombre ?? '') . ' ' . ($row->Apellido ?? ''))
+        $usuario->nombre_completo = trim(($row->Apellido ?? '') . ', ' . ($row->Nombre ?? ''))
                                     ?: ($row->display ?? $row->UserName);
-        $usuario->rol             = $row->rol;
-        $usuario->activo          = (bool) $row->activo_jusea;
+        $usuario->rol             = $row->rol ?? '';
+        $usuario->activo          = (bool) ($row->activo_jusea ?? false);
         $usuario->dni             = $row->DNI;
-        $usuario->grado           = $row->GRADO;
+        $usuario->grado           = $row->GRADO ?? '';
 
         return $usuario;
+    }
+
+    /**
+     * Crea un usuario en AspNetUsers a partir de los datos de APICPS.
+     * Id = UserName = DNI = el DNI traído de la API.
+     * Sin rol JUSEA asignado (acceso mínimo hasta que un admin lo configure).
+     */
+    public function crearDesdeApicps(string $dni): bool
+    {
+        return (bool) $this->db->table('AspNetUsers')->insert([
+            'Id'                   => $dni,
+            'UserName'             => $dni,
+            'NormalizedUserName'   => strtoupper($dni),
+            'DNI'                  => $dni,
+            'PasswordHash'         => '',
+            'SecurityStamp'        => strtoupper(bin2hex(random_bytes(16))),
+            'ConcurrencyStamp'     => strtolower(bin2hex(random_bytes(16))),
+            'bajaUnidad'           => 0,
+        ]);
     }
 
     // ── Consultas ─────────────────────────────────────────────────────────
