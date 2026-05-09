@@ -91,19 +91,24 @@ class PersonaModel extends Model
     public function insertar(array $data): bool
     {
         return (bool) $this->db->table('AspNetUsers')->insert([
-            'Id'                 => $data['dni'],
-            'UserName'           => $data['dni'],
-            'NormalizedUserName' => strtoupper($data['dni']),
-            'DNI'                => $data['dni'],
-            'Nombre'             => $data['nombre']   ?? null,
-            'Apellido'           => $data['apellido'] ?? null,
-            'GRADO'              => $data['grado']    ?? null,
-            'ARMA'               => $data['arma']     ?? null,
-            'display'            => $data['display']  ?? null,
-            'PasswordHash'       => '',
-            'SecurityStamp'      => strtoupper(bin2hex(random_bytes(16))),
-            'ConcurrencyStamp'   => strtolower(bin2hex(random_bytes(16))),
-            'bajaUnidad'         => 0,
+            'Id'                   => $data['dni'],
+            'UserName'             => $data['dni'],
+            'NormalizedUserName'   => strtoupper($data['dni']),
+            'DNI'                  => $data['dni'],
+            'Nombre'               => $data['nombre']   ?? null,
+            'Apellido'             => $data['apellido'] ?? null,
+            'GRADO'                => $data['grado']    ?? null,
+            'ARMA'                 => $data['arma']     ?? null,
+            'display'              => $data['display']  ?? null,
+            'PasswordHash'         => '',
+            'SecurityStamp'        => strtoupper(bin2hex(random_bytes(16))),
+            'ConcurrencyStamp'     => strtolower(bin2hex(random_bytes(16))),
+            'EmailConfirmed'       => 0,
+            'PhoneNumberConfirmed' => 0,
+            'TwoFactorEnabled'     => 0,
+            'LockoutEnabled'       => 0,
+            'AccessFailedCount'    => 0,
+            'bajaUnidad'           => 0,
         ]);
     }
 

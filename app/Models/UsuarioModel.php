@@ -94,6 +94,11 @@ class UsuarioModel extends Model
             'PasswordHash'         => '',
             'SecurityStamp'        => strtoupper(bin2hex(random_bytes(16))),
             'ConcurrencyStamp'     => strtolower(bin2hex(random_bytes(16))),
+            'EmailConfirmed'       => 0,
+            'PhoneNumberConfirmed' => 0,
+            'TwoFactorEnabled'     => 0,
+            'LockoutEnabled'       => 0,
+            'AccessFailedCount'    => 0,
             'bajaUnidad'           => 0,
         ]);
     }
