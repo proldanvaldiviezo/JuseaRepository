@@ -123,6 +123,7 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
         $routes->get('persona/buscar-dni',      'ApiController::buscarPersonaPorDni');
         $routes->get('persona/buscar-apellido', 'ApiController::buscarPersonaPorApellido');
         $routes->get('persona/buscar-nombre',   'ApiController::buscarPersonaPorNombre');
+        $routes->get('usuarios/buscar',         'ApiController::buscarUsuarioParaAcceso');
         $routes->post('ia/redactar-motivos',    'ApiController::redactarMotivos');
         $routes->post('ia/sugerir-normativa',   'ApiController::sugerirNormativa');
     });

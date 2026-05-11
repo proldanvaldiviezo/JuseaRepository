@@ -14,13 +14,23 @@ if (version_compare(PHP_VERSION, $minPhpVersion, '<')) {
 }
 
 // =====================================================
-// FORZAR entorno por TODAS las vias posibles
-// Esto DEBE ejecutarse ANTES de cargar Boot.php
+// DETECTAR entorno desde .env (antes de que arranque CI)
+// Local  → CI_ENVIRONMENT=development en .env
+// Server → CI_ENVIRONMENT=production  en .env
 // =====================================================
-$_SERVER['CI_ENVIRONMENT'] = 'development';
-$_ENV['CI_ENVIRONMENT'] = 'development';
-putenv('CI_ENVIRONMENT=development');
-define('ENVIRONMENT', 'development');
+$_ciEnv = 'production'; // default seguro
+$_envFile = __DIR__ . '/../.env';
+if (file_exists($_envFile)) {
+    $_envContent = file_get_contents($_envFile);
+    if (preg_match('/^CI_ENVIRONMENT\s*=\s*(\w+)/m', $_envContent, $_m)) {
+        $_ciEnv = trim($_m[1]);
+    }
+}
+$_SERVER['CI_ENVIRONMENT'] = $_ciEnv;
+$_ENV['CI_ENVIRONMENT']    = $_ciEnv;
+putenv('CI_ENVIRONMENT=' . $_ciEnv);
+define('ENVIRONMENT', $_ciEnv);
+unset($_ciEnv, $_envFile, $_envContent, $_m);
 
 // Ruta al Front Controller
 define('FCPATH', __DIR__ . DIRECTORY_SEPARATOR);

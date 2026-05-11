@@ -69,6 +69,49 @@ class ApiController extends Controller
         return $this->response->setJSON(array_map([$this, 'personaToArray'], $personas));
     }
 
+    /**
+     * Buscar usuario en AspNetUsers para asignar acceso JUSEA.
+     * Devuelve apellido, nombre, grado, DNI y si ya tiene rol en JUSEA.
+     * GET /api/usuarios/buscar?q=TEXTO
+     */
+    public function buscarUsuarioParaAcceso(): ResponseInterface
+    {
+        $q = trim($this->request->getGet('q') ?? '');
+
+        if (strlen($q) < 2) {
+            return $this->response->setJSON([]);
+        }
+
+        $db   = \Config\Database::connect();
+        $rows = $db->table('AspNetUsers')
+            ->select('AspNetUsers.Id, AspNetUsers.DNI, AspNetUsers.Apellido,
+                      AspNetUsers.Nombre, AspNetUsers.GRADO, AspNetUsers.ARMA,
+                      JUSEA_UsuarioRol.rol, JUSEA_UsuarioRol.activo AS activo_jusea')
+            ->join('JUSEA_UsuarioRol', 'JUSEA_UsuarioRol.user_id = AspNetUsers.Id', 'left')
+            ->groupStart()
+                ->like('AspNetUsers.Apellido', $q, 'both')
+                ->orLike('AspNetUsers.Nombre',  $q, 'both')
+                ->orLike('AspNetUsers.DNI',     $q, 'both')
+            ->groupEnd()
+            ->where('(AspNetUsers.bajaUnidad = 0 OR AspNetUsers.bajaUnidad IS NULL)', null, false)
+            ->orderBy('AspNetUsers.Apellido', 'ASC')
+            ->limit(12)
+            ->get()->getResultObject();
+
+        $result = array_map(fn($r) => [
+            'id'           => $r->Id,
+            'dni'          => $r->DNI          ?? '',
+            'apellido'     => $r->Apellido     ?? '',
+            'nombre'       => $r->Nombre       ?? '',
+            'grado'        => $r->GRADO        ?? '',
+            'arma'         => $r->ARMA         ?? '',
+            'rol_jusea'    => $r->rol          ?? null,
+            'activo_jusea' => (bool)($r->activo_jusea ?? false),
+        ], $rows);
+
+        return $this->response->setJSON($result);
+    }
+
     private function personaToArray(object $p): array
     {
         return [

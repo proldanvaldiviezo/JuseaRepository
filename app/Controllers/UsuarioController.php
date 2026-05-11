@@ -34,7 +34,7 @@ class UsuarioController extends Controller
         $stats['inactivos'] = count(array_filter($usuarios, fn($u) => !$u->activo_jusea));
 
         return view('layouts/main', [
-            'titulo'    => 'Gestión de Usuarios',
+            'titulo'    => 'Accesos JUSEA',
             'contenido' => view('usuarios/lista',
                 compact('usuarios', 'roles', 'stats', 'rolActual', 'idActual')),
         ]);
@@ -61,8 +61,8 @@ class UsuarioController extends Controller
     public function guardar()
     {
         $rules = [
-            'username' => 'required|min_length[3]|max_length[256]',
-            'rol'      => 'required|in_list[admin,jefe,operador,consulta]',
+            'user_id' => 'required|min_length[3]|max_length[450]',
+            'rol'     => 'required|in_list[admin,jefe,operador,consulta]',
         ];
 
         if (!$this->validate($rules)) {
@@ -70,25 +70,26 @@ class UsuarioController extends Controller
                 ->with('errors', $this->validator->getErrors());
         }
 
-        $username = $this->request->getPost('username');
-        $rol      = $this->request->getPost('rol');
+        $userId = $this->request->getPost('user_id');
+        $rol    = $this->request->getPost('rol');
 
         // Verificar que el usuario existe en AspNetUsers
         $aspUser = \Config\Database::connect()
             ->table('AspNetUsers')
             ->select('Id, UserName, Nombre, Apellido')
-            ->where('UserName', $username)
+            ->where('Id', $userId)
             ->get()->getRow();
 
         if (!$aspUser) {
             return redirect()->back()->withInput()
-                ->with('error', "El usuario «{$username}» no existe en el sistema Partes.");
+                ->with('error', 'El usuario seleccionado no existe en el sistema Partes.');
         }
 
         $this->model->asignarRol($aspUser->Id, $rol);
 
+        $nombre = trim(($aspUser->Apellido ?? '') . ', ' . ($aspUser->Nombre ?? '')) ?: $aspUser->UserName;
         return redirect()->to(site_url('usuarios'))
-            ->with('success', "Acceso JUSEA otorgado a {$aspUser->Nombre} {$aspUser->Apellido} ({$rol}).");
+            ->with('success', "Acceso JUSEA otorgado a {$nombre} con rol «{$rol}».");
     }
 
     // ─── Editar rol ───────────────────────────────────────────────────────

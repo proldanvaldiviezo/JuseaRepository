@@ -11,8 +11,8 @@
         <i class="bi bi-people-fill fs-4" style="color:var(--ea-blue)"></i>
     </div>
     <div>
-        <h2 class="mb-0 fw-bold" style="font-size:1.25rem">Gestión de Usuarios</h2>
-        <p class="text-muted mb-0 small">Administración de cuentas y niveles de acceso al sistema JUSEA CMN</p>
+        <h2 class="mb-0 fw-bold" style="font-size:1.25rem">Accesos JUSEA</h2>
+        <p class="text-muted mb-0 small">Integrantes con acceso habilitado al sistema — roles y niveles de permiso</p>
     </div>
 </div>
 
@@ -60,7 +60,7 @@ foreach ($statDef as $key => $sd):
 <div class="d-flex justify-content-between align-items-center mb-3">
     <span class="text-muted small"><i class="bi bi-people"></i> <?= count($usuarios) ?> usuario(s) en el sistema</span>
     <a href="<?= site_url('usuarios/nuevo') ?>" class="btn btn-sm btn-ea-blue">
-        <i class="bi bi-person-plus-fill"></i> Nuevo Usuario
+        <i class="bi bi-shield-plus me-1"></i> Otorgar Acceso
     </a>
 </div>
 
