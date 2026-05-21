@@ -37,7 +37,7 @@ class PersonalController extends Controller
                       AspNetUsers.DNI AS dni,
                       AspNetUsers.Apellido AS apellido,
                       AspNetUsers.Nombre AS nombre,
-                      AspNetUsers.GRADO AS grado,
+                      AspNetUsers.idGrado AS grado,
                       AspNetUsers.ARMA AS arma_especialidad,
                       AspNetUsers.display,
                       AspNetUsers.bajaUnidad');
@@ -57,7 +57,7 @@ class PersonalController extends Controller
             $builder->groupStart()
                     ->like('AspNetUsers.Apellido', $q, 'both')
                     ->orLike('AspNetUsers.Nombre', $q, 'both')
-                    ->orLike('AspNetUsers.GRADO', $q, 'both')
+                    ->orLike('AspNetUsers.idGrado', $q, 'both')
                     ->orLike('AspNetUsers.DNI', $q, 'both')
                     ->groupEnd();
         }
@@ -263,7 +263,7 @@ class PersonalController extends Controller
         $activo = $this->request->getGet('activo') ?? '1';
 
         $builder = $this->model->db->table('AspNetUsers')
-            ->select('DNI, Apellido, Nombre, GRADO, ARMA, display, bajaUnidad')
+            ->select('DNI, Apellido, Nombre, idGrado AS GRADO, ARMA, display, bajaUnidad')
             ->orderBy('Apellido', 'ASC');
 
         if ($activo === '1') $builder->where('bajaUnidad', 0);

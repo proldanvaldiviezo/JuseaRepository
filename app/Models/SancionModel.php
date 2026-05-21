@@ -94,7 +94,7 @@ class SancionModel extends Model
             p1.DNI AS dni_infractor,
             p1.Nombre AS nombre_infractor,
             p1.Apellido AS apellido_infractor,
-            p1.GRADO AS grado_infractor,
+            p1.idGrado AS grado_infractor,
             i.motivo,
             i.fecha_comision,
             i.tipo_sancion AS tipo,
@@ -102,7 +102,7 @@ class SancionModel extends Model
             p2.DNI AS dni_instructor,
             p2.Nombre AS nombre_instructor,
             p2.Apellido AS apellido_instructor,
-            p2.GRADO AS grado_instructor
+            p2.idGrado AS grado_instructor
         ');
         $builder->join('AspNetUsers p1', 's.id_causante = p1.Id', 'left');
         $builder->join('AspNetUsers p2', 's.id_autoridad = p2.Id', 'left');
@@ -134,7 +134,7 @@ class SancionModel extends Model
             i.lugar_cumplimiento,
             i.letra,
             i.nro,
-            p2.GRADO    AS grado_autoridad,
+            p2.idGrado  AS grado_autoridad,
             p2.Apellido AS apellido_autoridad,
             p2.Nombre   AS nombre_autoridad
         ');
@@ -155,7 +155,7 @@ class SancionModel extends Model
             p1.Apellido AS apellido_infractor, p1.GRADO AS grado_infractor,
             p1.ARMA AS arma_infractor,
             p2.DNI AS dni_instructor, p2.Nombre AS nombre_instructor,
-            p2.Apellido AS apellido_instructor, p2.GRADO AS grado_instructor,
+            p2.Apellido AS apellido_instructor, p2.idGrado AS grado_instructor,
             p2.display AS cargo_instructor,
             i.fecha_comision, i.reg_act_dis, i.inciso, i.motivo,
             i.tipo_sancion AS tipo_sancion_desc, i.duracion, i.lugar_cumplimiento,

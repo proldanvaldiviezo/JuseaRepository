@@ -188,7 +188,7 @@ class UsuarioController extends Controller
         return \Config\Database::connect()
             ->table('AspNetUsers')
             ->select('AspNetUsers.Id, AspNetUsers.UserName, AspNetUsers.Nombre,
-                      AspNetUsers.Apellido, AspNetUsers.DNI, AspNetUsers.GRADO,
+                      AspNetUsers.Apellido, AspNetUsers.DNI, AspNetUsers.idGrado AS GRADO,
                       JUSEA_UsuarioRol.rol, JUSEA_UsuarioRol.activo AS activo_jusea')
             ->join('JUSEA_UsuarioRol', 'JUSEA_UsuarioRol.user_id = AspNetUsers.Id', 'inner')
             ->where('AspNetUsers.Id', $id)

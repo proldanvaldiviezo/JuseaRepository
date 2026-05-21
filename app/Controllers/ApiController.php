@@ -85,7 +85,7 @@ class ApiController extends Controller
         $db   = \Config\Database::connect();
         $rows = $db->table('AspNetUsers')
             ->select('AspNetUsers.Id, AspNetUsers.DNI, AspNetUsers.Apellido,
-                      AspNetUsers.Nombre, AspNetUsers.GRADO, AspNetUsers.ARMA,
+                      AspNetUsers.Nombre, AspNetUsers.idGrado AS GRADO, AspNetUsers.ARMA,
                       JUSEA_UsuarioRol.rol, JUSEA_UsuarioRol.activo AS activo_jusea')
             ->join('JUSEA_UsuarioRol', 'JUSEA_UsuarioRol.user_id = AspNetUsers.Id', 'left')
             ->groupStart()

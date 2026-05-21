@@ -24,7 +24,7 @@ class PersonaModel extends Model
                       AspNetUsers.DNI AS dni,
                       AspNetUsers.Apellido AS apellido,
                       AspNetUsers.Nombre AS nombre,
-                      AspNetUsers.GRADO AS grado,
+                      AspNetUsers.idGrado AS grado,
                       AspNetUsers.ARMA AS arma_especialidad,
                       AspNetUsers.display AS display,
                       AspNetUsers.bajaUnidad');

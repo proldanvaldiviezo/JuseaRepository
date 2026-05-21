@@ -55,7 +55,7 @@ class UsuarioModel extends Model
         $row = $this->db->table('AspNetUsers')
             ->select('AspNetUsers.Id, AspNetUsers.UserName,
                       AspNetUsers.Nombre, AspNetUsers.Apellido, AspNetUsers.display,
-                      AspNetUsers.DNI, AspNetUsers.GRADO, AspNetUsers.bajaUnidad,
+                      AspNetUsers.DNI, AspNetUsers.idGrado AS GRADO, AspNetUsers.bajaUnidad,
                       JUSEA_UsuarioRol.rol, JUSEA_UsuarioRol.activo AS activo_jusea')
             ->join('JUSEA_UsuarioRol', 'JUSEA_UsuarioRol.user_id = AspNetUsers.Id', 'left')
             ->where('AspNetUsers.DNI', $dni)
@@ -110,7 +110,7 @@ class UsuarioModel extends Model
         return $this->db->table('AspNetUsers')
             ->select('AspNetUsers.Id, AspNetUsers.UserName,
                       AspNetUsers.Nombre, AspNetUsers.Apellido, AspNetUsers.display,
-                      AspNetUsers.DNI, AspNetUsers.GRADO, AspNetUsers.bajaUnidad,
+                      AspNetUsers.DNI, AspNetUsers.idGrado AS GRADO, AspNetUsers.bajaUnidad,
                       JUSEA_UsuarioRol.rol, JUSEA_UsuarioRol.activo AS activo_jusea')
             ->join('JUSEA_UsuarioRol', 'JUSEA_UsuarioRol.user_id = AspNetUsers.Id', 'inner')
             ->orderBy('JUSEA_UsuarioRol.activo', 'DESC')
@@ -124,7 +124,7 @@ class UsuarioModel extends Model
         return $this->db->table('AspNetUsers')
             ->select('AspNetUsers.Id, AspNetUsers.UserName,
                       AspNetUsers.Nombre, AspNetUsers.Apellido, AspNetUsers.display,
-                      AspNetUsers.DNI, AspNetUsers.GRADO,
+                      AspNetUsers.DNI, AspNetUsers.idGrado AS GRADO,
                       JUSEA_UsuarioRol.rol')
             ->join('JUSEA_UsuarioRol', 'JUSEA_UsuarioRol.user_id = AspNetUsers.Id', 'inner')
             ->where('JUSEA_UsuarioRol.activo', 1)
