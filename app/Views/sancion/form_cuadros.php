@@ -1,5 +1,5 @@
-<h2 class="mb-4"><i class="bi bi-file-earmark-text"></i> Sancion Disciplinaria - Cuadros</h2>
-<p class="text-muted">Imposicion directa - Art. 9/10 CDFFAA</p>
+﻿<h2 class="mb-4"><i class="bi bi-file-earmark-text"></i> Sanción Disciplinaria - Cuadros</h2>
+<p class="text-muted">Imposición directa - Art. 9/10 CDFFAA</p>
 
 <form action="<?= site_url('sancion/cuadros/guardar') ?>" method="post" class="needs-validation" novalidate id="formSancion">
     <?= csrf_field() ?>
@@ -41,7 +41,7 @@
         </li>
         <li class="nav-item">
             <button class="nav-link" id="tab-sancion" data-bs-toggle="tab" data-bs-target="#sancion" type="button">
-                <i class="bi bi-exclamation-triangle"></i> B. Sancion
+                <i class="bi bi-exclamation-triangle"></i> B. Sanción
             </button>
         </li>
         <li class="nav-item">
@@ -63,7 +63,7 @@
                 <div class="card-header bg-light"><strong>A. Datos del Infractor</strong></div>
                 <div class="card-body">
                     <div class="row g-3">
-                        <!-- DNI como campo principal de busqueda -->
+                        <!-- DNI como campo principal de búsqueda -->
                         <div class="col-md-3">
                             <label for="dni_infractor" class="form-label">DNI <span class="text-danger">*</span></label>
                             <div class="input-group">
@@ -75,9 +75,9 @@
                                     <i class="bi bi-search"></i>
                                 </button>
                             </div>
-                            <div class="invalid-feedback">DNI valido (7-10 digitos).</div>
+                            <div class="invalid-feedback">DNI válido (7-10 dígitos).</div>
                         </div>
-                        <!-- Busqueda por Apellido -->
+                        <!-- Búsqueda por Apellido -->
                         <div class="col-md-3 position-relative">
                             <label class="form-label">Buscar por Apellido</label>
                             <div class="input-group">
@@ -120,7 +120,7 @@
                             <label for="destino_infractor" class="form-label">Destino Interno</label>
                             <input type="text" class="form-control" id="destino_infractor" name="destino_infractor"
                                    value="<?= esc(old('destino_infractor') ?? '') ?>"
-                                   placeholder="Ej: Estado Mayor, Agrupacion Basica">
+                                   placeholder="Ej: Estado Mayor, Agrupación Básica">
                         </div>
                     </div>
                 </div>
@@ -135,11 +135,11 @@
         <!-- TAB B: SANCION -->
         <div class="tab-pane fade" id="sancion">
             <div class="card">
-                <div class="card-header bg-light"><strong>B. Sancion Disciplinaria</strong></div>
+                <div class="card-header bg-light"><strong>B. Sanción Disciplinaria</strong></div>
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-md-4">
-                            <label for="fecha_comision" class="form-label">Fecha Comision Falta <span class="text-danger">*</span></label>
+                            <label for="fecha_comision" class="form-label">Fecha Comisión Falta <span class="text-danger">*</span></label>
                             <input type="date" class="form-control" id="fecha_comision" name="fecha_comision"
                                    value="<?= esc(old('fecha_comision') ?? date('Y-m-d')) ?>" required>
                         </div>
@@ -176,13 +176,13 @@
                             </div>
                         </div>
                         <div class="col-12">
-                            <label for="motivo" class="form-label">Motivo (Descripcion circunstanciada) <span class="text-danger">*</span></label>
+                            <label for="motivo" class="form-label">Motivo (Descripción circunstanciada) <span class="text-danger">*</span></label>
                             <textarea class="form-control" id="motivo" name="motivo" rows="5" required minlength="5"
-                                      placeholder="Descripcion circunstanciada de los hechos..."><?= esc(old('motivo') ?? '') ?></textarea>
-                            <div class="invalid-feedback">Minimo 5 caracteres.</div>
+                                      placeholder="Descripción circunstanciada de los hechos..."><?= esc(old('motivo') ?? '') ?></textarea>
+                            <div class="invalid-feedback">Mínimo 5 caracteres.</div>
                             <div class="d-flex align-items-center gap-2 mt-1">
                                 <button type="button" class="btn btn-outline-primary btn-sm" id="btnMejorarIA">
-                                    <i class="bi bi-stars"></i> Mejorar redaccion con IA
+                                    <i class="bi bi-stars"></i> Mejorar redacción con IA
                                 </button>
                                 <span id="iaStatusCuad" class="form-text" style="display:none;"></span>
                             </div>
@@ -200,7 +200,7 @@
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <label for="tipo_sancion_desc" class="form-label">Tipo de Sancion</label>
+                            <label for="tipo_sancion_desc" class="form-label">Tipo de Sanción</label>
                             <select class="form-select" id="tipo_sancion_desc" name="tipo_sancion_desc">
                                 <option value="Arresto Simple" <?= old('tipo_sancion_desc') === 'Arresto Simple' ? 'selected' : '' ?>>Arresto Simple</option>
                                 <option value="Arresto Riguroso" <?= old('tipo_sancion_desc') === 'Arresto Riguroso' ? 'selected' : '' ?>>Arresto Riguroso</option>
@@ -208,11 +208,11 @@
                             </select>
                         </div>
                         <div class="col-md-4">
-                            <label for="duracion" class="form-label">Duracion (dias)</label>
+                            <label for="duracion" class="form-label">Duración (días)</label>
                             <input type="text" class="form-control" id="duracion" name="duracion"
                                    value="<?= esc(old('duracion') ?? '') ?>"
                                    placeholder="Ej: TREINTA Y CINCO (35)">
-                            <small class="form-text text-muted">En letras y numero</small>
+                            <small class="form-text text-muted">En letras y número</small>
                         </div>
                         <div class="col-md-4">
                             <label for="lugar_cumplimiento" class="form-label">Lugar de Cumplimiento</label>
@@ -237,11 +237,11 @@
         <!-- TAB C: AUTORIDAD -->
         <div class="tab-pane fade" id="autoridad">
             <div class="card">
-                <div class="card-header bg-light"><strong>C. Autoridad que Impone la Sancion</strong></div>
+                <div class="card-header bg-light"><strong>C. Autoridad que Impone la Sanción</strong></div>
                 <div class="card-body">
                     <p class="text-muted small mb-3"><i class="bi bi-info-circle"></i> Busque por DNI o Apellido, o complete los campos directamente.</p>
                     <div class="row g-3">
-                        <!-- Busqueda DNI autoridad -->
+                        <!-- Búsqueda DNI autoridad -->
                         <div class="col-md-3">
                             <label for="dni_instructor" class="form-label">DNI</label>
                             <div class="input-group">
@@ -254,7 +254,7 @@
                                 </button>
                             </div>
                         </div>
-                        <!-- Busqueda Apellido autoridad -->
+                        <!-- Búsqueda Apellido autoridad -->
                         <div class="col-md-3 position-relative">
                             <label class="form-label">Buscar por Apellido</label>
                             <div class="input-group">
@@ -313,7 +313,7 @@
                 <div class="card-body">
                     <p class="text-muted small mb-3"><i class="bi bi-info-circle"></i> Busque por DNI o Apellido, o complete los campos directamente. Datos usados para emitir la Planilla de Revisión de Oficio (ANEXO 2).</p>
                     <div class="row g-3">
-                        <!-- Busqueda DNI revisor -->
+                        <!-- Búsqueda DNI revisor -->
                         <div class="col-md-3">
                             <label for="dni_revisor" class="form-label">DNI</label>
                             <div class="input-group">
@@ -326,7 +326,7 @@
                                 </button>
                             </div>
                         </div>
-                        <!-- Busqueda Apellido revisor -->
+                        <!-- Búsqueda Apellido revisor -->
                         <div class="col-md-3 position-relative">
                             <label class="form-label">Buscar por Apellido</label>
                             <div class="input-group">
@@ -378,13 +378,13 @@
     </div>
 </form>
 
-<!-- Script de busqueda por DNI y Apellido -->
+<!-- Script de búsqueda por DNI y Apellido -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     var urlDni = '<?= site_url('api/persona/buscar-dni') ?>';
     var urlApellido = '<?= site_url('api/persona/buscar-apellido') ?>';
 
-    // === Funcion comun: cargar datos del infractor en el formulario ===
+    // === Función común: cargar datos del infractor en el formulario ===
     function cargarInfractor(data) {
         document.getElementById('dni_infractor').value = data.dni || '';
         document.getElementById('grado_infractor').value = data.grado || '';
@@ -398,14 +398,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // === Buscar infractor por DNI ===
     document.getElementById('btnBuscarDni').addEventListener('click', function() {
         var dni = document.getElementById('dni_infractor').value.trim();
-        if (dni.length < 7) { alert('Ingrese un DNI valido (min 7 digitos)'); return; }
+        if (dni.length < 7) { alert('Ingrese un DNI válido (mín. 7 dígitos)'); return; }
         fetch(urlDni + '?dni=' + dni + '&tipo=cuadro')
             .then(r => r.json())
             .then(data => {
                 if (data.found) { cargarInfractor(data.data); }
                 else { document.getElementById('busquedaResultado').style.display = 'none'; alert('DNI no encontrado en BD de Cuadros.'); }
             })
-            .catch(() => alert('Error de conexion'));
+            .catch(() => alert('Error de conexión'));
     });
 
     document.getElementById('dni_infractor').addEventListener('keypress', function(e) {
@@ -458,7 +458,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // === Funcion comun: cargar datos de autoridad ===
+    // === Función común: cargar datos de autoridad ===
     function cargarAutoridad(data) {
         document.getElementById('dni_instructor').value = data.dni || '';
         document.getElementById('grado_instructor').value = data.grado || '';
@@ -471,14 +471,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // === Buscar autoridad por DNI ===
     document.getElementById('btnBuscarDniAut').addEventListener('click', function() {
         var dni = document.getElementById('dni_instructor').value.trim();
-        if (dni.length < 7) { alert('Ingrese un DNI valido (min 7 digitos)'); return; }
+        if (dni.length < 7) { alert('Ingrese un DNI válido (mín. 7 dígitos)'); return; }
         fetch(urlDni + '?dni=' + dni)
             .then(r => r.json())
             .then(data => {
                 if (data.found) { cargarAutoridad(data.data); }
                 else { alert('DNI no encontrado. Complete los campos manualmente.'); }
             })
-            .catch(() => alert('Error de conexion'));
+            .catch(() => alert('Error de conexión'));
     });
 
     document.getElementById('dni_instructor').addEventListener('keypress', function(e) {
@@ -530,7 +530,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // === Funcion comun: cargar datos del REVISOR ===
+    // === Función común: cargar datos del REVISOR ===
     function cargarRevisor(data) {
         document.getElementById('dni_revisor').value = data.dni || '';
         document.getElementById('revisor_grado').value = data.grado || '';
@@ -542,14 +542,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // === Buscar revisor por DNI ===
     document.getElementById('btnBuscarDniRev').addEventListener('click', function() {
         var dni = document.getElementById('dni_revisor').value.trim();
-        if (dni.length < 7) { alert('Ingrese un DNI valido (min 7 digitos)'); return; }
+        if (dni.length < 7) { alert('Ingrese un DNI válido (mín. 7 dígitos)'); return; }
         fetch(urlDni + '?dni=' + dni)
             .then(r => r.json())
             .then(data => {
                 if (data.found) { cargarRevisor(data.data); }
                 else { alert('DNI no encontrado. Complete los campos manualmente.'); }
             })
-            .catch(() => alert('Error de conexion'));
+            .catch(() => alert('Error de conexión'));
     });
 
     document.getElementById('dni_revisor').addEventListener('keypress', function(e) {
@@ -644,7 +644,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(function(r) { return r.json(); })
         .then(function(data) {
             btn.disabled = false;
-            btn.innerHTML = '<i class="bi bi-stars"></i> Mejorar redaccion con IA';
+            btn.innerHTML = '<i class="bi bi-stars"></i> Mejorar redacción con IA';
             if (data.error) {
                 iaStatus.textContent = '⚠️ ' + data.error;
                 iaStatus.className = 'form-text text-danger';
@@ -658,7 +658,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(function(err) {
             btn.disabled = false;
-            btn.innerHTML = '<i class="bi bi-stars"></i> Mejorar redaccion con IA';
+            btn.innerHTML = '<i class="bi bi-stars"></i> Mejorar redacción con IA';
             iaStatus.textContent = '⚠️ Error de conexión: ' + err.toString();
             iaStatus.className = 'form-text text-danger';
         });
@@ -750,3 +750,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+
+
+
+

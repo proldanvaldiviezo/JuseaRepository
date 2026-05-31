@@ -145,13 +145,14 @@ class DocumentGenerator
         $row->addCell(6*$U, $gs(6))->addText(' ' . $regArt, $fN, $pI);
         $row->addCell(2*$U, $gs(2))->addText(' ' . $inciso, $fN, $pI);
 
-        // Row[7] + Row[8] motivo - fila única con altura auto para texto largo
+        // Row[7] motivo - fila única con altura auto para texto largo
+        // Label 6*U (~53mm) para que "MOTIVO DE LA SANCIÓN" no haga wrap
         $motivoTexto = ' ' . ($s['motivo'] ?? '');
         $row = $table->addRow(null); // altura automática según contenido
         $row->addCell(1*$U, $norm)->addText('3', $fB, $pC);
-        $celdaLabel = $row->addCell(4*$U, array_merge($gs(4), ['valign' => 'top']));
+        $celdaLabel = $row->addCell(6*$U, array_merge($gs(6), ['valign' => 'top']));
         $celdaLabel->addText('MOTIVO DE LA SANCIÓN', $fB, $pI);
-        $celdaMotivo = $row->addCell(14*$U, array_merge($gs(14), ['valign' => 'top']));
+        $celdaMotivo = $row->addCell(12*$U, array_merge($gs(12), ['valign' => 'top']));
         // Párrafo con word-wrap habilitado para texto largo
         $pMotivo = ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::LEFT, 'spaceAfter' => 0, 'spaceBefore' => 0];
         $celdaMotivo->addText($motivoTexto, $fN, $pMotivo);
@@ -313,13 +314,14 @@ class DocumentGenerator
         $row->addCell(6*$U, $gs(6))->addText(' Pto: ' . ($s['reg_act_dis'] ?? ''), $fN, $pI);
         $row->addCell(2*$U, $gs(2))->addText(' ' . ($s['inciso'] ?? ''), $fN, $pI);
 
-        // Row[7] + Row[8] motivo - fila única con altura auto para texto largo
+        // Row[7] motivo - fila única con altura auto para texto largo
+        // Label 6*U (~53mm) para que "MOTIVO DE LA SANCIÓN" no haga wrap
         $motivoTexto = ' ' . ($s['motivo'] ?? '');
         $row = $table->addRow(null); // altura automática según contenido
         $row->addCell(1*$U, $norm)->addText('3', $fB, $pC);
-        $celdaLabelCad = $row->addCell(3*$U, array_merge($gs(3), ['valign' => 'top']));
+        $celdaLabelCad = $row->addCell(6*$U, array_merge($gs(6), ['valign' => 'top']));
         $celdaLabelCad->addText('MOTIVO DE LA SANCIÓN', $fB, $pI);
-        $celdaMotivoCad = $row->addCell(15*$U, array_merge($gs(15), ['valign' => 'top']));
+        $celdaMotivoCad = $row->addCell(12*$U, array_merge($gs(12), ['valign' => 'top']));
         $pMotivoCad = ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::LEFT, 'spaceAfter' => 0, 'spaceBefore' => 0];
         $celdaMotivoCad->addText($motivoTexto, $fN, $pMotivoCad);
 
@@ -758,15 +760,26 @@ class DocumentGenerator
             [$u*6,  ' ' . $regArt,                          'N', 'L'],
             [$u*2,  ' ' . $inciso,                          'N', 'L'],
         ]);
-        // Motivo cuadros: altura dinámica para texto largo
+        // Motivo cuadros: label 6*u para evitar wrap; altura igualada en todas las celdas
         $motivoTextPDF = ' ' . ($s['motivo'] ?? '');
         $pdf->SetFont('times', '', 10);
-        $hMotivoAuto = max($hM, $pdf->getStringHeight($u * 14, $motivoTextPDF));
+        $contentW     = $u * 12;
+        $lineH        = $pdf->getStringHeight($contentW, 'A'); // alto de 1 línea
+        $textH        = $pdf->getStringHeight($contentW, $motivoTextPDF);
+        $hMotivoAuto  = max($hM, $textH);
         $pdf->SetFont('times', 'B', 10);
         $pdf->Cell($u,     $hMotivoAuto, '3',                    1, 0, 'C', false, '', 1);
-        $pdf->Cell($u * 4, $hMotivoAuto, 'MOTIVO DE LA SANCIÓN', 1, 0, 'L', false, '', 1);
+        $pdf->Cell($u * 6, $hMotivoAuto, 'MOTIVO DE LA SANCIÓN', 1, 0, 'L', false, '', 1);
         $pdf->SetFont('times', '', 10);
-        $pdf->MultiCell($u * 14, 0, $motivoTextPDF, 1, 'L', false, 1);
+        if ($textH <= $lineH * 1.5) {
+            // Texto corto (1 línea): Cell regular, altura = $hMotivoAuto → bordes perfectamente alineados
+            $pdf->Cell($contentW, $hMotivoAuto, $motivoTextPDF, 1, 1, 'L');
+        } else {
+            // Texto largo (varias líneas): MultiCell con alto por línea exacto
+            $nLines  = max(1, (int) round($textH / $lineH));
+            $perLine = $hMotivoAuto / $nLines;
+            $pdf->MultiCell($contentW, $perLine, $motivoTextPDF, 1, 'L', false, 1);
+        }
         $this->fRowPDF($pdf, $h, [
             [$u,    '4',             'B', 'C'],
             [$u,    'TIPO',          'B', 'L'],
@@ -917,15 +930,26 @@ class DocumentGenerator
             [$u*6,  ' ' . $pto,                                         'N', 'L'],
             [$u*2,  ' ' . $inciso,                                      'N', 'L'],
         ]);
-        // Motivo cadetes: altura dinámica para texto largo
+        // Motivo cadetes: label 6*u para evitar wrap; altura igualada en todas las celdas
         $motivoTextCadPDF = ' ' . ($s['motivo'] ?? '');
         $pdf->SetFont('times', '', 10);
-        $hMotivoCadAuto = max($hM, $pdf->getStringHeight($u * 15, $motivoTextCadPDF));
+        $contentWCad     = $u * 12;
+        $lineHCad        = $pdf->getStringHeight($contentWCad, 'A'); // alto de 1 línea
+        $textHCad        = $pdf->getStringHeight($contentWCad, $motivoTextCadPDF);
+        $hMotivoCadAuto  = max($hM, $textHCad);
         $pdf->SetFont('times', 'B', 10);
-        $pdf->Cell($u,     $hMotivoCadAuto, '3', 1, 0, 'C', false, '', 1);
-        $pdf->Cell($u * 3, $hMotivoCadAuto, '',  1, 0, 'L', false, '', 1);
+        $pdf->Cell($u,     $hMotivoCadAuto, '3',                    1, 0, 'C', false, '', 1);
+        $pdf->Cell($u * 6, $hMotivoCadAuto, 'MOTIVO DE LA SANCIÓN', 1, 0, 'L', false, '', 1);
         $pdf->SetFont('times', '', 10);
-        $pdf->MultiCell($u * 15, 0, $motivoTextCadPDF, 1, 'L', false, 1);
+        if ($textHCad <= $lineHCad * 1.5) {
+            // Texto corto (1 línea): Cell regular, altura = $hMotivoCadAuto → bordes perfectamente alineados
+            $pdf->Cell($contentWCad, $hMotivoCadAuto, $motivoTextCadPDF, 1, 1, 'L');
+        } else {
+            // Texto largo (varias líneas): MultiCell con alto por línea exacto
+            $nLinesCad  = max(1, (int) round($textHCad / $lineHCad));
+            $perLineCad = $hMotivoCadAuto / $nLinesCad;
+            $pdf->MultiCell($contentWCad, $perLineCad, $motivoTextCadPDF, 1, 'L', false, 1);
+        }
         $this->fRowPDF($pdf, $h, [
             [$u,    '4',                                'B', 'C'],
             [$u*9,  'SANCIÓN: Días de Arresto',         'B', 'L'],

@@ -10,12 +10,12 @@
             <?= csrf_field() ?>
 
             <div class="mb-3">
-                <label for="anio" class="form-label fw-semibold">Ano <span class="text-danger">*</span></label>
+                <label for="anio" class="form-label fw-semibold">Año <span class="text-danger">*</span></label>
                 <input type="text" class="form-control" id="anio" name="anio"
                        value="<?= esc($encabezado->anio ?? date('Y')) ?>"
                        required maxlength="4" minlength="4" data-solo-numeros
                        placeholder="Ej: 2026">
-                <div class="invalid-feedback">Ingrese un ano valido (4 digitos).</div>
+                <div class="invalid-feedback">Ingrese un año válido (4 dígitos).</div>
             </div>
 
             <div class="mb-3">
@@ -23,7 +23,7 @@
                 <input type="text" class="form-control" id="membrete" name="membrete"
                        value="<?= esc($encabezado->membrete ?? '') ?>"
                        required minlength="3" maxlength="255"
-                       placeholder="Ej: Ano del Bicentenario de la Independencia">
+                       placeholder="Ej: Año del Bicentenario de la Independencia">
                 <div class="invalid-feedback">Ingrese el membrete (min. 3 caracteres).</div>
             </div>
 

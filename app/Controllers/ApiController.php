@@ -261,6 +261,8 @@ class ApiController extends Controller
                 'anthropic-version: 2023-06-01'
             ],
             CURLOPT_TIMEOUT        => 60,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => 0,
         ]);
 
         $raw    = curl_exec($ch);
@@ -512,7 +514,9 @@ NORM;
                 'x-api-key: ' . $apiKey,
                 'anthropic-version: 2023-06-01'
             ],
-            CURLOPT_TIMEOUT => 45,
+            CURLOPT_TIMEOUT        => 45,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => 0,
         ]);
 
         $raw   = curl_exec($ch);

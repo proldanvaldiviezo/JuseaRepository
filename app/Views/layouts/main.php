@@ -218,7 +218,7 @@
 
                 <?php if (session()->getFlashdata('errors')): ?>
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <i class="bi bi-exclamation-triangle"></i> <strong>Errores de validacion:</strong>
+                        <i class="bi bi-exclamation-triangle"></i> <strong>Errores de validación:</strong>
                         <ul class="mb-0 mt-1">
                             <?php foreach (session()->getFlashdata('errors') as $err): ?>
                                 <li><?= esc($err) ?></li>

@@ -1,6 +1,7 @@
 
 .vs/
 public/sync_baja.php
+public/diag_*.php
 writable/debugbar/
 writable/logs/
 writable/cache/

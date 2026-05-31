@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>JUSEA CMN - Inicio de Sesion</title>
+    <title>JUSEA CMN - Inicio de Sesión</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <style>
@@ -49,7 +49,7 @@
                             <input type="text" class="form-control" id="username" name="username"
                                    value="<?= esc(old('username') ?? '') ?>"
                                    placeholder="Ingrese su usuario" required minlength="3" autofocus>
-                            <div class="invalid-feedback">Ingrese un usuario valido (min. 3 caracteres).</div>
+                            <div class="invalid-feedback">Ingrese un usuario válido (min. 3 caracteres).</div>
                         </div>
                     </div>
 
@@ -58,13 +58,13 @@
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-lock"></i></span>
                             <input type="password" class="form-control" id="password" name="password"
-                                   placeholder="Ingrese su contrasena" required minlength="6">
-                            <div class="invalid-feedback">Ingrese una contrasena valida (min. 6 caracteres).</div>
+                                   placeholder="Ingrese su contraseña" required minlength="6">
+                            <div class="invalid-feedback">Ingrese una contraseña válida (min. 6 caracteres).</div>
                         </div>
                     </div>
 
                     <button type="submit" class="btn w-100 text-white fw-semibold" style="background:linear-gradient(90deg,#6b0f1a,#8B1520);border:1px solid #c9a227;">
-                        <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesion
+                        <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
                     </button>
                 </form>
             </div>
@@ -88,3 +88,4 @@
     </script>
 </body>
 </html>
+

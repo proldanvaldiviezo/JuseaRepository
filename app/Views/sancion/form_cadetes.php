@@ -1,5 +1,5 @@
-<h2 class="mb-4"><i class="bi bi-file-earmark-text"></i> Sancion Disciplinaria - Cadetes</h2>
-<p class="text-muted">Imposicion directa - Regimen Disciplinario Formativo CMN</p>
+﻿<h2 class="mb-4"><i class="bi bi-file-earmark-text"></i> Sanción Disciplinaria - Cadetes</h2>
+<p class="text-muted">Imposición directa - Régimen Disciplinario Formativo CMN</p>
 
 <form action="<?= site_url('sancion/cadetes/guardar') ?>" method="post" class="needs-validation" novalidate id="formSancion">
     <?= csrf_field() ?>
@@ -14,8 +14,7 @@
         </li>
         <li class="nav-item">
             <button class="nav-link" id="tab-sancion" data-bs-toggle="tab" data-bs-target="#sancion" type="button">
-                <i class="bi bi-exclamation-triangle"></i> B. Sancion
-            </button>
+                <i class="bi bi-exclamation-triangle"></i> B. Sanción            </button>
         </li>
         <li class="nav-item">
             <button class="nav-link" id="tab-autoridad" data-bs-toggle="tab" data-bs-target="#autoridad" type="button">
@@ -48,7 +47,7 @@
                                 </button>
                             </div>
                         </div>
-                        <!-- Busqueda por Apellido -->
+                        <!-- Búsqueda por Apellido -->
                         <div class="col-md-3 position-relative">
                             <label class="form-label">Buscar por Apellido</label>
                             <div class="input-group">
@@ -61,10 +60,10 @@
                             <div id="listaApellidos" class="list-group position-absolute w-100" style="z-index:1050; display:none; max-height:200px; overflow-y:auto;"></div>
                         </div>
                         <div class="col-md-3">
-                            <label for="grado_infractor" class="form-label">Ano / Grado <span class="text-danger">*</span></label>
+                            <label for="grado_infractor" class="form-label">Año / Grado <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="grado_infractor" name="grado_infractor"
                                    value="<?= esc(old('grado_infractor') ?? '') ?>" required
-                                   placeholder="Ej: IVto Ano, IIdo Ano">
+                                   placeholder="Ej: IVto Año, IIdo Año">
                         </div>
                         <div class="col-md-3">
                             <label for="arma_infractor" class="form-label">Arma / Servicio</label>
@@ -86,10 +85,10 @@
                         </div>
                         <input type="hidden" id="nombre_infractor" name="nombre_infractor" value="<?= esc(old('nombre_infractor') ?? '-') ?>">
                         <div class="col-md-6">
-                            <label for="destino_infractor" class="form-label">Destino Interno (Escuadron/Cia)</label>
+                            <label for="destino_infractor" class="form-label">Destino Interno (Escuadrón/Cia)</label>
                             <input type="text" class="form-control" id="destino_infractor" name="destino_infractor"
                                    value="<?= esc(old('destino_infractor') ?? '') ?>"
-                                   placeholder="Ej: Escuadron de Caballeria">
+                                   placeholder="Ej: Escuadrón de Caballeria">
                         </div>
                     </div>
                 </div>
@@ -104,11 +103,11 @@
         <!-- TAB B: SANCION -->
         <div class="tab-pane fade" id="sancion">
             <div class="card">
-                <div class="card-header bg-light"><strong>B. Sancion Disciplinaria</strong></div>
+                <div class="card-header bg-light"><strong>B. Sanción Disciplinaria</strong></div>
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-md-4">
-                            <label for="fecha_comision" class="form-label">Fecha Comision Falta <span class="text-danger">*</span></label>
+                            <label for="fecha_comision" class="form-label">Fecha Comisión Falta <span class="text-danger">*</span></label>
                             <input type="date" class="form-control" id="fecha_comision" name="fecha_comision"
                                    value="<?= esc(old('fecha_comision') ?? date('Y-m-d')) ?>" required>
                         </div>
@@ -145,12 +144,12 @@
                             </div>
                         </div>
                         <div class="col-12">
-                            <label for="motivo" class="form-label">Motivo (Descripcion circunstanciada) <span class="text-danger">*</span></label>
+                            <label for="motivo" class="form-label">Motivo (Descripción circunstanciada) <span class="text-danger">*</span></label>
                             <textarea class="form-control" id="motivo" name="motivo" rows="5" required minlength="5"
-                                      placeholder="Descripcion circunstanciada de los hechos..."><?= esc(old('motivo') ?? '') ?></textarea>
+                                      placeholder="Descripción circunstanciada de los hechos..."><?= esc(old('motivo') ?? '') ?></textarea>
                             <div class="d-flex align-items-center gap-2 mt-1">
                                 <button type="button" class="btn btn-outline-primary btn-sm" id="btnMejorarIA">
-                                    <i class="bi bi-stars"></i> Mejorar redaccion con IA
+                                    <i class="bi bi-stars"></i> Mejorar redacción con IA
                                 </button>
                                 <span id="iaStatusCad" class="form-text" style="display:none;"></span>
                             </div>
@@ -168,18 +167,18 @@
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <label for="tipo_sancion_desc" class="form-label">Tipo de Sancion</label>
+                            <label for="tipo_sancion_desc" class="form-label">Tipo de Sanción</label>
                             <select class="form-select" id="tipo_sancion_desc" name="tipo_sancion_desc">
-                                <option value="Dias de Arresto" <?= old('tipo_sancion_desc') === 'Dias de Arresto' ? 'selected' : '' ?>>Dias de Arresto</option>
+                                <option value="Días de Arresto" <?= old('tipo_sancion_desc') === 'Días de Arresto' ? 'selected' : '' ?>>Días de Arresto</option>
                                 <option value="Apercibimiento" <?= old('tipo_sancion_desc') === 'Apercibimiento' ? 'selected' : '' ?>>Apercibimiento</option>
                             </select>
                         </div>
                         <div class="col-md-4">
-                            <label for="duracion" class="form-label">Duracion</label>
-                            <input type="text" class="form-control" id="duracion" name="duracion"
-                                   value="<?= esc(old('duracion') ?? '') ?>"
+                            <label for="Duración" class="form-label">Duración</label>
+                            <input type="text" class="form-control" id="Duración" name="Duración"
+                                   value="<?= esc(old('Duración') ?? '') ?>"
                                    placeholder="Ej: TREINTA Y CINCO (35)">
-                            <small class="form-text text-muted">En letras y numero</small>
+                            <small class="form-text text-muted">En letras y número</small>
                         </div>
                         <div class="col-md-4">
                             <label for="lugar_cumplimiento" class="form-label">Lugar de Cumplimiento</label>
@@ -204,7 +203,7 @@
         <!-- TAB C: AUTORIDAD -->
         <div class="tab-pane fade" id="autoridad">
             <div class="card">
-                <div class="card-header bg-light"><strong>C. Autoridad que Impone la Sancion</strong></div>
+                <div class="card-header bg-light"><strong>C. Autoridad que Impone la Sanción</strong></div>
                 <div class="card-body">
                     <p class="text-muted small mb-3"><i class="bi bi-info-circle"></i> Busque por DNI o Apellido, o complete los campos directamente.</p>
                     <div class="row g-3">
@@ -283,7 +282,7 @@
         <!-- TAB D: REVISOR -->
         <div class="tab-pane fade" id="revisor">
             <div class="card">
-                <div class="card-header bg-light"><strong>D. Autoridad de Revision</strong></div>
+                <div class="card-header bg-light"><strong>D. Autoridad de Revisión</strong></div>
                 <div class="card-body">
                     <p class="text-muted small mb-3"><i class="bi bi-info-circle"></i> Busque por DNI o Apellido, o complete los campos directamente.</p>
                     <div class="row g-3">
@@ -359,14 +358,14 @@
     </div>
 </form>
 
-<!-- Script de busqueda por DNI y Apellido -->
+<!-- Script de búsqueda por DNI y Apellido -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     var urlDni = '<?= site_url('api/persona/buscar-dni') ?>';
     var urlApellido = '<?= site_url('api/persona/buscar-apellido') ?>';
     var urlNombre = '<?= site_url('api/persona/buscar-nombre') ?>';
 
-    // === Funcion comun: cargar datos del infractor ===
+    // === Función común: cargar datos del infractor ===
     function cargarInfractor(data) {
         document.getElementById('dni_infractor').value = data.dni || '';
         document.getElementById('grado_infractor').value = data.grado || '';
@@ -380,14 +379,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // === Buscar infractor (cadete) por DNI ===
     document.getElementById('btnBuscarDni').addEventListener('click', function() {
         var dni = document.getElementById('dni_infractor').value.trim();
-        if (dni.length < 7) { alert('Ingrese un DNI valido (min 7 digitos)'); return; }
+        if (dni.length < 7) { alert('Ingrese un DNI válido (mín. 7 dígitos)'); return; }
         fetch(urlDni + '?dni=' + dni + '&tipo=cadete')
             .then(r => r.json())
             .then(data => {
                 if (data.found) { cargarInfractor(data.data); }
                 else { document.getElementById('busquedaResultado').style.display = 'none'; alert('DNI no encontrado en BD de Cadetes.'); }
             })
-            .catch(() => alert('Error de conexion'));
+            .catch(() => alert('Error de conexión'));
     });
 
     document.getElementById('dni_infractor').addEventListener('keypress', function(e) {
@@ -453,14 +452,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById('btnBuscarDniAut').addEventListener('click', function() {
         var dni = document.getElementById('dni_instructor').value.trim();
-        if (dni.length < 7) { alert('Ingrese un DNI valido (min 7 digitos)'); return; }
+        if (dni.length < 7) { alert('Ingrese un DNI válido (mín. 7 dígitos)'); return; }
         fetch(urlDni + '?dni=' + dni + '&tipo=cuadro')
             .then(r => r.json())
             .then(data => {
                 if (data.found) { cargarAutoridad(data.data); }
                 else { alert('DNI no encontrado. Complete los campos manualmente.'); }
             })
-            .catch(() => alert('Error de conexion'));
+            .catch(() => alert('Error de conexión'));
     });
 
     document.getElementById('dni_instructor').addEventListener('keypress', function(e) {
@@ -531,14 +530,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById('btnBuscarDniRev').addEventListener('click', function() {
         var dni = document.getElementById('dni_revisor').value.trim();
-        if (dni.length < 7) { alert('Ingrese un DNI valido (min 7 digitos)'); return; }
+        if (dni.length < 7) { alert('Ingrese un DNI válido (mín. 7 dígitos)'); return; }
         fetch(urlDni + '?dni=' + dni + '&tipo=cuadro')
             .then(r => r.json())
             .then(data => {
                 if (data.found) { cargarRevisor(data.data); }
                 else { alert('DNI no encontrado. Complete los campos manualmente.'); }
             })
-            .catch(() => alert('Error de conexion'));
+            .catch(() => alert('Error de conexión'));
     });
 
     document.getElementById('dni_revisor').addEventListener('keypress', function(e) {
@@ -635,7 +634,7 @@ document.addEventListener('DOMContentLoaded', function() {
             fecha:    document.getElementById('fecha_comision').value || '',
             articulo: document.getElementById('reg_act_dis').value || '',
             inciso:   document.getElementById('inciso').value || '',
-            dias:     document.getElementById('duracion').value || '',
+            dias:     document.getElementById('Duración').value || '',
             borrador: borrador
         };
 
@@ -647,7 +646,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(function(r) { return r.json(); })
         .then(function(data) {
             btn.disabled = false;
-            btn.innerHTML = '<i class="bi bi-stars"></i> Mejorar redaccion con IA';
+            btn.innerHTML = '<i class="bi bi-stars"></i> Mejorar redacción con IA';
             if (data.error) {
                 iaStatus.textContent = '⚠️ ' + data.error;
                 iaStatus.className = 'form-text text-danger';
@@ -661,7 +660,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(function(err) {
             btn.disabled = false;
-            btn.innerHTML = '<i class="bi bi-stars"></i> Mejorar redaccion con IA';
+            btn.innerHTML = '<i class="bi bi-stars"></i> Mejorar redacción con IA';
             iaStatus.textContent = '⚠️ Error de conexión: ' + err.toString();
             iaStatus.className = 'form-text text-danger';
         });
@@ -753,3 +752,12 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+
+
+
+
+
+
+
+
+

@@ -1,6 +1,6 @@
 <h2 class="mb-4"><i class="bi bi-clock-history"></i> Historial de Sanciones</h2>
 
-<!-- Formulario de busqueda -->
+<!-- Formulario de búsqueda -->
 <div class="card mb-4">
     <div class="card-body">
         <form action="<?= site_url('historial/buscar') ?>" method="post" class="needs-validation" novalidate>
@@ -20,7 +20,7 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <label for="valor" class="form-label">Valor de busqueda</label>
+                    <label for="valor" class="form-label">Valor de búsqueda</label>
                     <input type="text" class="form-control" id="valor" name="valor"
                            value="<?= esc($valor ?? '') ?>" required minlength="2"
                            placeholder="Ingrese DNI o apellido...">
@@ -53,7 +53,7 @@
                         <thead class="table-dark">
                             <tr>
                                 <th colspan="4" class="text-center">DATOS DEL INFRACTOR</th>
-                                <th colspan="3" class="text-center">SANCION</th>
+                                <th colspan="3" class="text-center">SANCIÓN</th>
                                 <th colspan="2" class="text-center">IMPUESTA POR</th>
                                 <th>ESTADO</th>
                                 <th class="text-center">ACCIONES</th>

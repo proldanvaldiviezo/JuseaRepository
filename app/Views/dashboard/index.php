@@ -1,9 +1,9 @@
-<h2 class="mb-1">Panel Principal</h2>
+﻿<h2 class="mb-1">Panel Principal</h2>
 <p class="text-muted mb-4">Seleccione el módulo con el que desea trabajar:</p>
 
 <div class="row g-4">
 
-    <!-- ── Sancion Disciplinaria — Cuadros ─────────────────────────────── -->
+    <!-- ── Sanción Disciplinaria — Cuadros ─────────────────────────────── -->
     <div class="col-md-4">
         <a href="<?= site_url('sancion/cuadros') ?>" class="text-decoration-none">
             <div class="card card-modulo h-100">
@@ -16,7 +16,7 @@
         </a>
     </div>
 
-    <!-- ── Sancion Disciplinaria — Cadetes ─────────────────────────────── -->
+    <!-- ── Sanción Disciplinaria — Cadetes ─────────────────────────────── -->
     <div class="col-md-4">
         <a href="<?= site_url('sancion/cadetes') ?>" class="text-decoration-none">
             <div class="card card-modulo h-100">
@@ -123,3 +123,4 @@
     <?php endif; ?>
 
 </div>
+
